@@ -32,10 +32,11 @@ async function checkAppStatus() {
         
         statusDiv.innerHTML = '<p>Memeriksa status aplikasi...</p>';
         
-        const response = await fetch('/status');
+        const response = await fetch('https://web-production-68c4e.up.railway.app/status');
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
+        
         
         const data = await response.json();
         console.log('App status:', data);
@@ -120,7 +121,8 @@ async function checkAppStatus() {
 
 async function fetchJurusanList() {
     try {
-        const response = await fetch("/jurusan");
+        const response = await fetch("https://web-production-68c4e.up.railway.app/status")
+
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
@@ -226,10 +228,11 @@ async function testUpload() {
         const formData = new FormData();
         formData.append("file", file);
         
-        const response = await fetch("/test-upload", {
+        const response = await fetch("https://web-production-68c4e.up.railway.app/test-upload", {
             method: "POST",
             body: formData,
         });
+        
         
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
@@ -1121,11 +1124,11 @@ async function uploadFile() {
         console.log('Sending analysis request...');
         const startTime = performance.now();
         
-
-        const response = await fetch("/predict", {
+        const response = await fetch("https://web-production-68c4e.up.railway.app/predict", {
             method: "POST",
             body: formData,
         });
+        
         
         const endTime = performance.now();
         const duration = ((endTime - startTime) / 1000).toFixed(2);
