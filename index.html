@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Prediksi Analisis Data Tel-U</title>
+    <style>
+        :root {
+            --primary-color: #B81D24;
+            --secondary-color: #0f4c75;
+            --dark-color: #1b262c;
+            --light-color: #f5f5f5;
+            --accent-color: #f9a826;
+            --transition-speed: 0.3s;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f0f0f0;
+            color: #333;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Enhanced Header with Navigation */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+        
+        .logo img {
+            height: 60px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            transition: transform var(--transition-speed);
+        }
+        
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+        
+        .logo-text h1 {
+            font-size: 24px;
+            font-weight: 700;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .logo-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            font-size: 16px;
+            transition: color var(--transition-speed);
+        }
+        
+        nav a:after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: white;
+            transition: width var(--transition-speed);
+        }
+        
+        nav a:hover:after {
+            width: 100%;
+        }
+        
+        nav a:hover {
+            color: var(--accent-color);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        /* Enhanced Hero Section with Particles */
+        .hero {
+            padding: 80px 0;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(184,29,36,0.1) 0%, rgba(15,76,117,0.1) 100%);
+            border-radius: 10px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: var(--dark-color);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .hero p {
+            font-size: 18px;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: #555;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .cta-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all var(--transition-speed);
+            box-shadow: 0 4px 15px rgba(184,29,36,0.3);
+        }
+        
+        .cta-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(184,29,36,0.4);
+        }
+        
+        .cta-btn.secondary {
+            background-color: transparent;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            box-shadow: none;
+        }
+        
+        .cta-btn.secondary:hover {
+            background-color: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(184,29,36,0.3);
+        }
+        
+        /* Stats Counter Section */
+        .stats-counter {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        }
+        
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            flex: 1;
+            min-width: 200px;
+            border-radius: 10px;
+            transition: transform var(--transition-speed);
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            background-color: #f9f9f9;
+        }
+        
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        /* Enhanced Feature Cards */
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 60px 0;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 320px;
+            height: 380px;
+            overflow: hidden;
+            transition: all var(--transition-speed);
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-15px) rotateY(5deg);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-card:hover .feature-icon i {
+            transform: scale(1.2) rotate(10deg);
+        }
+        
+        .feature-icon {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-icon:before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            top: -50%;
+            left: -50%;
+            transition: all 0.6s ease;
+        }
+        
+        .feature-card:hover .feature-icon:before {
+            left: 100%;
+        }
+        
+        .feature-icon i {
+            font-size: 65px;
+            transition: all 0.4s ease;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .feature-content {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .feature-content h3 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--dark-color);
+        }
+        
+        .feature-content p {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 25px;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 10px rgba(184,29,36,0.2);
+        }
+        
+        .btn:hover {
+            background-color: #931a1e;
+            box-shadow: 0 6px 15px rgba(184,29,36,0.3);
+            padding: 10px 30px;
+        }
+        
+        /* Enhanced About Section */
+        .about-section {
+            background-color: white;
+            padding: 60px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            margin: 70px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .about-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .about-section h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            color: var(--dark-color);
+            text-align: center;
+            position: relative;
+            display: inline-block;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .about-section h2::after {
+            content: "";
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+        
+        .about-content {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .about-text {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .about-text p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 18px;
+        }
+        
+        .about-text ul {
+            margin: 20px 0;
+            padding-left: 20px;
+        }
+        
+        .about-text li {
+            margin-bottom: 10px;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .about-text li::before {
+            content: "•";
+            color: var(--primary-color);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        
+        .about-image {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+        
+        .about-image img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            transition: all 0.5s ease;
+        }
+        
+        .about-image::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border: 3px solid var(--primary-color);
+            border-radius: 15px;
+            top: 15px;
+            left: 15px;
+            z-index: -1;
+        }
+        
+        /* New Testimonials Section */
+        .testimonials {
+            padding: 50px 0;
+            position: relative;
+        }
+        
+        .testimonials h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 50px;
+            color: var(--dark-color);
+        }
+        
+        .testimonial-container {
+            display: flex;
+            overflow-x: hidden;
+            scroll-snap-type: x mandatory;
+            gap: 30px;
+            padding: 20px 0;
+            width: 100%;
+        }
+        
+        .testimonial-card {
+            flex: 0 0 auto;
+            width: 350px;
+            padding: 30px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            scroll-snap-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 60px;
+            color: rgba(184,29,36,0.1);
+            font-family: 'Georgia', serif;
+        }
+        
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #f0f0f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+        
+        .author-info h4 {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        .testimonial-nav {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .testimonial-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #ddd;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-dot.active {
+            background-color: var(--primary-color);
+            transform: scale(1.2);
+        }
+        
+        /* New FAQ Section */
+        .faq-section {
+            padding: 60px 0;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            margin: 70px 0;
+        }
+        
+        .faq-section h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+            color: var(--dark-color);
+        }
+        
+        .faq-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .faq-item {
+            margin-bottom: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 20px;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-question:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0 20px;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 20px;
+            max-height: 1000px;
+        }
+        
+        /* Enhanced Footer */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 60px 0 30px;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        
+        .footer-column {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .footer-column h3::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: var(--accent-color);
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-column a:hover {
+            color: var(--accent-color);
+        }
+        
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .social-icon:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-5px);
+        }
+        
+        .contact-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            text-align: center;
+        }
+        
+        .footer-bottom p {
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        
+       
+        
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .fab i {
+            font-size: 24px;
+        }
+        
+        /* Loading Animation */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loader.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 100;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast i {
+            font-size: 20px;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .animate-fadeIn {
+            animation: fadeIn 0.8s ease forwards;
+        }
+        
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .animate-pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        .animate-slideInLeft {
+            animation: slideInLeft 0.8s ease forwards;
+        }
+        
+        .animate-slideInRight {
+            animation: slideInRight 0.8s ease forwards;
+        }
+        
+        /* Feature cards animation */
+        .feature-card:nth-child(1) {
+            animation-delay: 0.2s;
+        }
+        
+        .feature-card:nth-child(2) {
+            animation-delay: 0.4s;
+        }
+        
+        .feature-card:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+        
+        /* Scroll animations */
+        .fade-in-section {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in-section.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Dark Mode Toggle */
+        .dark-mode-toggle {
+            position: fixed;
+            top: 90px;
+            right: 20px;
+            background-color: var(--dark-color);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 99;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .dark-mode-toggle:hover {
+            transform: rotate(30deg);
+        }
+        
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #f5f5f5;
+        }
+        
+        body.dark-mode .feature-card,
+        body.dark-mode .about-section,
+        body.dark-mode .faq-section,
+        body.dark-mode .stats-counter,
+        body.dark-mode .testimonial-card {
+            background-color: #1e1e1e;
+            color: #f5f5f5;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        body.dark-mode .feature-content h3,
+        body.dark-mode .about-section h2,
+        body.dark-mode .faq-section h2,
+        body.dark-mode .testimonials h2,
+        body.dark-mode .hero h2 {
+            color: #f5f5f5;
+        }
+        
+        body.dark-mode .feature-content p,
+        body.dark-mode .about-text p,
+        body.dark-mode .hero p {
+            color: #bbbbbb;
+        }
+        
+        body.dark-mode .faq-question {
+            background-color: #2a2a2a;
+        }
+        
+        body.dark-mode .faq-item {
+            border-color: #333;
+        }
+        
+        body.dark-mode .testimonial-content {
+            color: #bbbbbb;
+        }
+        
+        /* Motion Background */
+        .area {
+            background: linear-gradient(to left, #8f94fb, #4e54c8);
+            width: 100%;
+            height: 100vh;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        
+        .circles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .circles li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+        }
+        
+        .circles li:nth-child(1) {
+            left: 25%;
+            width: 80px;
+            height: 80px;
+            animation-delay: 0s;
+        }
+        
+        .circles li:nth-child(2) {
+            left: 10%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 2s;
+            animation-duration: 12s;
+        }
+        
+        .circles li:nth-child(3) {
+            left: 70%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 4s;
+        }
+        
+        .circles li:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-delay: 0s;
+            animation-duration: 18s;
+        }
+        
+        .circles li:nth-child(5) {
+            left: 65%;
+            width: 20px;
+            height: 20px;
+            animation-delay: 0s;
+        }
+        
+        .circles li:nth-child(6) {
+            left: 75%;
+            width: 110px;
+            height: 110px;
+            animation-delay: 3s;
+        }
+        
+        .circles li:nth-child(7) {
+            left: 35%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 7s;
+        }
+        
+        .circles li:nth-child(8) {
+            left: 50%;
+            width: 25px;
+            height: 25px;
+            animation-delay: 15s;
+            animation-duration: 45s;
+        }
+        
+        .circles li:nth-child(9) {
+            left: 20%;
+            width: 15px;
+            height: 15px;
+            animation-delay: 2s;
+            animation-duration: 35s;
+        }
+        
+        .circles li:nth-child(10) {
+            left: 85%;
+            width: 150px;
+            height: 150px;
+            animation-delay: 0s;
+            animation-duration: 11s;
+        }
+        
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 0;
+            }
+            
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+            }
+            
+            .hero h2 {
+                font-size: 32px;
+            }
+            
+            .about-content {
+                flex-direction: column;
+            }
+            
+            .about-image {
+                order: -1;
+                margin-bottom: 30px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 30px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            nav ul {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                height: calc(100vh - 80px);
+                width: 250px;
+                background-color: var(--dark-color);
+                flex-direction: column;
+                padding: 30px;
+                transition: all 0.3s ease;
+                z-index: 900;
+            }
+            
+            nav ul.show {
+                left: 0;
+            }
+            
+            .hero h2 {
+                font-size: 28px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .features {
+                gap: 20px;
+            }
+            
+            .feature-card {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .about-section {
+                padding: 30px;
+            }
+            
+            .testimonial-container {
+                padding: 0 20px;
+            }
+        }
+        #particles-js {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        pointer-events: auto; /* This ensures mouse events pass through */
+    }
+    
+    body {
+        position: relative; /* Makes the particles container position correctly */
+    }
+    
+    .container {
+        position: rexlative;
+        z-index: 1; /* Ensures content appears above particles */
+    }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loader">
+        <div class="spinner"></div>
+    </div>
+    
+    <!-- Toast Notification -->
+    <div class="toast">
+        <i class="fas fa-info-circle"></i>
+        <span class="toast-message">Selamat datang di Tel-U Prediction Analytics!</span>
+    </div>
+    
+    <!-- Dark Mode Toggle -->
+    <div class="dark-mode-toggle" id="darkModeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+    
+    <!-- Fixed Action Button -->
+    <div class="fab" id="scrollToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <img src="image-removebg-preview-3.png" alt="Logo Telkom University">
+                    <div class="logo-text">
+                        <h1>Tel-U Prediction Analytics</h1>
+                        <p>Powered by Artificial Intelligence</p>
+                    </div>
+                </div>
+                
+                <button class="mobile-menu-btn" id="mobileMenuBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+                
+                <nav>
+                    <ul id="mainMenu">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Fitur</a></li>
+                        <li><a href="#about">Tentang</a></li>
+                        <li><a href="#testimonials">Testimoni</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#contact">Kontak</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    
+    <main class="container">
+        <section class="hero" id="home">
+            <div id="particles-js"></div>
+            <div class="hero-content">
+                <h2 class="animate-fadeIn">Prediksi & Analisis Data Telkom University</h2>
+                <p class="animate-fadeIn">Platform analisis berbasis AI untuk mengoptimalkan pengambilan keputusan strategis di lingkungan Telkom University</p>
+                
+                <div class="cta-buttons">
+                    <a href="#features" class="cta-btn animate-pulse">Lihat Fitur</a>
+                    <a href="#about" class="cta-btn secondary">Pelajari Lebih Lanjut</a>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Stats Counter Section -->
+        <section class="stats-counter fade-in-section">
+            <div class="stats-container">
+                <div class="stat-item">
+                    <div class="stat-number" data-count="98">0</div>
+                    <div class="stat-label">Akurasi Prediksi</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number" data-count="7">0</div>
+                    <div class="stat-label">Fakultas</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number" data-count="37">0</div>
+                    <div class="stat-label">Program Studi</div>
+                </div>
+                
+                <div class="stat-item">
+                    <div class="stat-number" data-count="28650">0</div>
+                    <div class="stat-label">Mahasiswa</div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="features fade-in-section" id="features">
+            <div class="feature-card animate-fadeIn">
+                <div class="feature-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Analisis Program Studi</h3>
+                    <p>Analisis mendalam tentang tren peminat, prestasi, dan lulusan setiap program studi di Telkom University.</p>
+                    <a href="#" class="btn" id="feature1-btn">Akses Fitur</a>
+                </div>
+            </div>
+            
+            <div class="feature-card animate-fadeIn">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Prediksi Pendaftaran</h3>
+                    <p>Perkiraan jumlah pendaftar dan registrasi mahasiswa baru berdasarkan analisis data historis.</p>
+                    <a href="#" class="btn" id="feature2-btn">Akses Fitur</a>
+                </div>
+            </div>
+            
+            <div class="feature-card animate-fadeIn">
+                <div class="feature-icon">
+                    <i class="fas fa-calendar-alt"></i>
+                </div>
+                <div class="feature-content">
+                    <h3>Prediksi YoY Pendaftar</h3>
+                    <p>Analisis pertumbuhan year-over-year jumlah pendaftar dengan prediksi tren masa depan.</p>
+                    <a href="#" class="btn" id="feature3-btn">Akses Fitur</a>
+                </div>
+            </div>
+        </section>
+        
+        <section class="about-section fade-in-section" id="about">
+            <h2>Tentang Platform Ini</h2>
+            <div class="about-content">
+                <div class="about-text animate-slideInLeft">
+                    <p>Platform <strong>Tel-U Prediction Analytics</strong> dikembangkan dengan menggabungkan teknologi Artificial Intelligence dan analisis data canggih untuk memberikan wawasan komprehensif tentang tren pendaftaran, kelulusan, dan kebutuhan program studi di Telkom University.</p>
+                    <p>Dengan memanfaatkan algoritma machine learning dan deep learning, platform ini mampu menganalisis pola historis dan memprediksi tren masa depan dengan tingkat akurasi yang tinggi. Data yang digunakan mencakup berbagai aspek, termasuk:</p>
+                    <ul>
+                        <li>Demografi pendaftar dan mahasiswa</li>
+                        <li>Nilai akademik dan prestasi</li>
+                        <li>Latar belakang pendidikan</li>
+                        <li>Faktor eksternal yang memengaruhi keputusan calon mahasiswa</li>
+                        <li>Tren industri dan kebutuhan pasar kerja</li>
+                    </ul>
+                    <p>Tujuan utama platform ini adalah membantu manajemen Telkom University dalam mengambil keputusan strategis berbasis data, sehingga dapat meningkatkan kualitas layanan pendidikan dan mengoptimalkan alokasi sumber daya.</p>
+                </div>
+                <div class="about-image animate-slideInRight">
+                    <img src="image-removebg-preview-2.png" alt="Analisis Data Tel-U" class="animate-float">
+                </div>
+            </div>
+        </section>
+        
+        <section class="faq-section fade-in-section" id="faq">
+            <h2>Pertanyaan Umum</h2>
+            <div class="faq-container">
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Bagaimana cara mengakses platform ini?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Platform Tel-U Prediction Analytics dapat diakses melalui portal internal Telkom University menggunakan kredensial SSO (Single Sign-On) yang sama dengan sistem akademik. Untuk akses pertama kali, silakan menghubungi admin sistem untuk aktivasi akun.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Apakah data yang digunakan selalu diperbarui?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Ya, platform ini terintegrasi dengan database akademik Telkom University dan secara otomatis memperbarui data setiap hari. Prediksi dan analisis diperbarui secara real-time berdasarkan data terbaru yang tersedia.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Bagaimana tingkat akurasi prediksi yang dihasilkan?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Model prediksi kami memiliki tingkat akurasi rata-rata 98% berdasarkan validasi dengan data historis 5 tahun terakhir. Akurasi ini terus ditingkatkan melalui proses pembelajaran mesin yang berkelanjutan dan evaluasi berkala.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Apakah saya bisa mengekspor data dan visualisasi?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Ya, semua data dan visualisasi pada platform dapat diekspor dalam berbagai format seperti PDF, Excel, CSV, dan gambar (PNG/JPEG). Anda juga dapat menjadwalkan laporan otomatis yang akan dikirim melalui email secara berkala.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Bagaimana keamanan data pada platform ini?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Keamanan data merupakan prioritas utama kami. Platform ini mengimplementasikan enkripsi end-to-end, autentikasi multi-faktor, dan kontrol akses berbasis peran. Semua aktivitas pengguna juga dicatat dalam log audit untuk memastikan kepatuhan terhadap kebijakan privasi dan keamanan data.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer id="contact">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Tentang Kami</h3>
+                    <p>Tel-U Prediction Analytics dikembangkan oleh Tim Data Science & AI Telkom University untuk mendukung pengambilan keputusan berbasis data di lingkungan akademik.</p>
+                    <div class="social-icons">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Fitur</a></li>
+                        <li><a href="#about">Tentang Platform</a></li>
+                        <li><a href="#testimonials">Testimoni</a></li>
+                        <li><a href="#faq">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-column">
+                    <h3>Kontak</h3>
+                    <div class="contact-info">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <p>Jl. Telekomunikasi No. 1, Terusan Buah Batu, Bandung, Jawa Barat 40257</p>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fas fa-phone-alt"></i>
+                        <p>+62 22 7564108</p>
+                    </div>
+                    <div class="contact-info">
+                        <i class="fas fa-envelope"></i>
+                        <p>info@telkomuniversity.ac.id</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 Telkom University Prediction Analytics. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Particles.js for background animation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        // Loader Animation
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                document.querySelector('.loader').classList.add('fade-out');
+                
+                // Show welcome toast
+                setTimeout(function() {
+                    document.querySelector('.toast').classList.add('show');
+                    
+                    // Hide toast after 5 seconds
+                    setTimeout(function() {
+                        document.querySelector('.toast').classList.remove('show');
+                    }, 5000);
+                }, 1000);
+            }, 1500);
+        });
+        
+        // Mobile Menu Toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mainMenu').classList.toggle('show');
+            this.innerHTML = document.getElementById('mainMenu').classList.contains('show') ? 
+                '<i class="fas fa-times"></i>' : 
+                '<i class="fas fa-bars"></i>';
+        });
+        
+        // Smooth Scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    if (document.getElementById('mainMenu').classList.contains('show')) {
+                        document.getElementById('mainMenu').classList.remove('show');
+                        document.getElementById('mobileMenuBtn').innerHTML = '<i class="fas fa-bars"></i>';
+                    }
+                }
+            });
+        });
+        
+        // Scroll to Top Button
+        document.getElementById('scrollToTop').addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Dark Mode Toggle
+        document.getElementById('darkModeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            this.innerHTML = document.body.classList.contains('dark-mode') ? 
+                '<i class="fas fa-sun"></i>' : 
+                '<i class="fas fa-moon"></i>';
+        });
+        
+        // FAQ Accordion
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', function() {
+                const faqItem = this.parentElement;
+                
+                // Close other open items
+                document.querySelectorAll('.faq-item.active').forEach(item => {
+                    if (item !== faqItem) {
+                        item.classList.remove('active');
+                    }
+                });
+                
+                faqItem.classList.toggle('active');
+            });
+        });
+        
+        // Stats Counter Animation
+        function animateCounter(el) {
+            const target = parseInt(el.getAttribute('data-count'));
+            const duration = 2000; // 2 seconds
+            const step = (target / duration) * 10;
+            let current = 0;
+            
+            const timer = setInterval(function() {
+                current += step;
+                if (current >= target) {
+                    clearInterval(timer);
+                    current = target;
+                }
+                el.textContent = Math.floor(current) + (el.parentElement.querySelector('.stat-label').textContent.includes('Akurasi') ? '%' : '');
+            }, 10);
+        }
+        
+        // Scroll animations
+        function checkScrollAnimation() {
+            const elements = document.querySelectorAll('.fade-in-section');
+            const windowHeight = window.innerHeight;
+            
+            elements.forEach(element => {
+                const elementPosition = element.getBoundingClientRect().top;
+                
+                if (elementPosition < windowHeight - 100) {
+                    element.classList.add('is-visible');
+                    
+                    // Animate counters if they're in view
+                    if (element.classList.contains('stats-counter')) {
+                        const counters = element.querySelectorAll('.stat-number');
+                        counters.forEach(counter => {
+                            if (!counter.classList.contains('animated')) {
+                                counter.classList.add('animated');
+                                animateCounter(counter);
+                            }
+                        });
+                    }
+                }
+            });
+        }
+        
+        // Initialize scroll animation check
+        window.addEventListener('scroll', checkScrollAnimation);
+        window.addEventListener('load', checkScrollAnimation);
+        
+        // Testimonial Slider
+        const testimonialContainer = document.getElementById('testimonialContainer');
+        const testimonialDots = document.querySelectorAll('.testimonial-dot');
+        const testimonials = document.querySelectorAll('.testimonial-card');
+        let currentTestimonial = 0;
+        const testimonialWidth = 380; // Width + gap
+        
+        function showTestimonial(index) {
+            if (window.innerWidth < 768) {
+                testimonialContainer.style.transform = `translateX(-${index * 100}%)`;
+            } else {
+                const scrollAmount = index === 0 ? 0 : index * testimonialWidth;
+                testimonialContainer.scrollTo({
+                    left: scrollAmount,
+                    behavior: 'smooth'
+                });
+            }
+            
+            testimonialDots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            
+            currentTestimonial = index;
+        }
+        
+        testimonialDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showTestimonial(index);
+            });
+        });
+        
+        // Auto rotate testimonials
+        setInterval(() => {
+            currentTestimonial = (currentTestimonial + 1) % testimonials.length;
+            showTestimonial(currentTestimonial);
+        }, 5000);
+        
+        // Initialize Particles.js
+        if (typeof particlesJS !== 'undefined') {
+        particlesJS('particles-js', {
+            
+            particles: {
+                number: {
+                    value: 120, // Increased number of particles for fuller effect
+                    density: {
+                        enable: true,
+                        value_area: 800
+                    }
+                },
+                color: {
+                    value: '#B81D24'
+                },
+                shape: {
+                    type: 'circle',
+                    stroke: {
+                        width: 0,
+                        color: '#000000'
+                    }
+                },
+                opacity: {
+                    value: 0.5,
+                    random: false,
+                    anim: {
+                        enable: false
+                    }
+                },
+                size: {
+                    value: 3,
+                    random: true,
+                    anim: {
+                        enable: false
+                    }
+                },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: '#B81D24',
+                    opacity: 0.4,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: 'none',
+                    random: false,
+                    straight: false,
+                    out_mode: 'out',
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: {
+                    onhover: {
+                        enable: true,
+                        mode: 'grab'
+                    },
+                    onclick: {
+                        enable: true,
+                        mode: 'push'
+                    },
+                    resize: true
+                },
+                modes: {
+                    grab: {
+                        distance: 140,
+                        line_linked: {
+                            opacity: 1
+                        }
+                    },
+                    push: {
+                        particles_nb: 4
+                    }
+                }
+            },
+            retina_detect: true
+        });
+    }
+        
+        // Feature Card Events
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseover', function() {
+                const icon = this.querySelector('.feature-icon i');
+                icon.style.transform = 'scale(1.2) rotate(10deg)';
+                icon.style.transition = 'transform 0.4s ease';
+            });
+            
+            card.addEventListener('mouseout', function() {
+                const icon = this.querySelector('.feature-icon i');
+                icon.style.transform = 'scale(1) rotate(0deg)';
+            });
+        });
+        
+        // Feature Button Events
+        document.getElementById('feature1-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'prodi.html';
+        });
+        
+        document.getElementById('feature2-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'predikTELU.html';
+        });
+        
+        document.getElementById('feature3-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            window.location.href = 'predikyoy.html';
+        });
+    </script>
+</body>
+</html>
