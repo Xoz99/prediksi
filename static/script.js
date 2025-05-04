@@ -32,7 +32,8 @@ async function checkAppStatus() {
         
         statusDiv.innerHTML = '<p>Memeriksa status aplikasi...</p>';
         
-        const response = await fetch('https://web-production-68c4e.up.railway.app/status');
+      const response = await fetch("https://prediksi-production.up.railway.app/jurusan");
+
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
         }
