@@ -758,6 +758,155 @@
                 .section {
             scroll-margin-top: 80px;
         }
+        .nav-bar {
+        background-color: var(--accent-red);
+        padding: 0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        transition: all 0.3s ease;
+    }
+    
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        height: 70px;
+    }
+    
+    .logo-small {
+        display: none;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .logo-small img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    
+    .nav-links {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        flex: 1;
+    }
+    
+    .nav-button {
+        background-color: transparent;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        margin: 0 5px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-align: center;
+        position: relative;
+    }
+    
+    .nav-button:after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 3px;
+        bottom: 5px;
+        left: 50%;
+        background-color: white;
+        transition: all 0.3s ease;
+        transform: translateX(-50%);
+    }
+    
+    .nav-button:hover, .nav-button:focus {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    .nav-button:hover:after, .nav-button:focus:after {
+        width: 70%;
+    }
+    
+    .nav-button.active {
+        background-color: white;
+        color: var(--accent-red);
+        transform: translateY(0);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .nav-button.active:after {
+        width: 0;
+    }
+    
+    .nav-toggle {
+        display: none;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 30px;
+        height: 21px;
+        cursor: pointer;
+    }
+    
+    .nav-toggle span {
+        display: block;
+        height: 3px;
+        width: 100%;
+        background-color: white;
+        border-radius: 3px;
+        transition: all 0.3s ease;
+    }
+    
+    /* Responsive styles */
+    @media (max-width: 992px) {
+        .nav-container {
+            height: 60px;
+        }
+        
+        .logo-small {
+            display: block;
+        }
+        
+        .nav-button {
+            padding: 10px 20px;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .nav-links {
+            position: fixed;
+            top: 60px;
+            right: -100%;
+            height: calc(100vh - 60px);
+            width: 80%;
+            background-color: var(--accent-red);
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 20px;
+            transition: right 0.3s ease;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+            z-index: 101;
+        }
+        
+        .nav-links.active {
+            right: 0;
+        }
+        
+        .nav-button {
+            width: 100%;
+            margin: 5px 0;
+            text-align: left;
+        }
+        
+        .nav-toggle {
+            display: flex;
+        }
+    }
+    
     </style>
 </head>
 <body>
@@ -776,11 +925,24 @@
         </div>
     </div>
     
-        <div class="nav-bar">
+    <div class="nav-bar">
         <div class="nav-container">
-            <button class="nav-button" onclick="window.location.href='predikYoY.html'">Prediksi YoY Pendaftar</button>
-            <button class="nav-button" onclick="window.location.href='predikTELU.html'">Prediksi Pendaftaran dan Registrasi Tel-U</button>
+            <div class="logo-small">
+                <img src="image-removebg-preview.png" alt="Logo" />
+            </div>
+            <div class="nav-links">
+                <button class="nav-button active" onclick="window.location.href='index.html'">Beranda</button>
+                <button class="nav-button" onclick="window.location.href='predikYoY.html'">Prediksi YoY Pendaftar</button>
+                <button class="nav-button" onclick="window.location.href='predikTELU.html'">Prediksi Pendaftaran dan Registrasi Tel-U</button>
+                
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
+    </div>
     </div>
     
     <div class="container">

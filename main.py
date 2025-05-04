@@ -411,6 +411,6 @@ if jurusan_list:
 else:
     logger.warning("No jurusan loaded")
 
-@app.get("/", response_class=HTMLResponse)
+@app.get("/home", response_class=HTMLResponse)
 async def read_index():
     return FileResponse("static/index.html")
