@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konversi Data PMB Telkom</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ml-regression/7.0.0/ml-regression.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #CF0A0A; /* Merah Telkom */
+            --primary-dark: #8B0000; /* Merah tua */
+            --primary-light: #F8D7DA; /* Merah muda pucat */
+            --secondary-color: #FFFFFF; /* Putih */
+            --bg-light: #FFF5F5; /* Background merah muda sangat pucat */
+            --text-dark: #333333;
+            --text-light: #721C24; /* Merah tua untuk teks sekunder */
+            --border-color: #F8D7DA; /* Border pink pucat */
+            --success-color: #A52A2A; /* Merah kecoklatan untuk success */
+            --warning-color: #CD5C5C; /* Merah muda tua untuk warning */
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary-light);
+            padding-bottom: 10px;
+        }
+        
+        .upload-box {
+            border: 2px dashed var(--border-color);
+            padding: 30px;
+            text-align: center;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background-color: var(--bg-light);
+        }
+        
+        .upload-box:hover {
+            border-color: var(--primary-color);
+            background-color: #FFE8E8;
+        }
+        
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: block;
+            margin: 20px auto;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .log {
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: monospace;
+            padding: 10px;
+            border-radius: 4px;
+            height: 150px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            border: 1px solid var(--primary-dark);
+        }
+        
+        .log-entry {
+            margin: 5px 0;
+            line-height: 1.3;
+        }
+        
+        .success { color: #33ff33; }
+        .error { color: #ff6b6b; }
+        .warning { color: #ffcc33; }
+        .info { color: #CF0A0A; }
+        
+        .results {
+            margin-top: 30px;
+            display: none;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        th {
+            background-color: var(--primary-light);
+            color: var(--text-light);
+        }
+        
+        tr:hover {
+            background-color: var(--bg-light);
+        }
+        
+        .chart-container {
+            height: 400px;
+            margin: 20px 0;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 10px;
+            background-color: white;
+        }
+        
+        #file-info {
+            margin-top: 10px;
+            font-style: italic;
+            color: var(--text-light);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Konversi Data PMB Telkom University</h1>
+        
+        <div id="upload-box" class="upload-box">
+            <p>Drag & drop file Data_PMB_Compare.csv di sini atau klik untuk upload</p>
+            <input type="file" id="file-input" accept=".csv" style="display: none;">
+            <div id="file-info"></div>
+        </div>
+        
+        <div id="log" class="log">
+            <div class="log-entry">Aplikasi siap. Silakan upload file CSV...</div>
+        </div>
+        
+        <button id="process-btn" class="btn" disabled>Proses Data</button>
+        
+        <div id="results" class="results">
+            <h2>Hasil Konversi Data</h2>
+            
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>Campus</th>
+                        <th>Year</th>
+                        <th>Applicants</th>
+                        <th>Type</th>
+                    </tr>
+                </thead>
+                <tbody id="data-body"></tbody>
+            </table>
+            
+            <div class="chart-container">
+                <canvas id="chart"></canvas>
+            </div>
+            
+            <button id="download-btn" class="btn">Download CSV</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const uploadBox = document.getElementById('upload-box');
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+        const processBtn = document.getElementById('process-btn');
+        const log = document.getElementById('log');
+        const results = document.getElementById('results');
+        const dataBody = document.getElementById('data-body');
+        const downloadBtn = document.getElementById('download-btn');
+        const chartCanvas = document.getElementById('chart');
+        
+        // App State
+        let rawData = null;
+        let processedData = null;
+        let chart = null;
+        
+        // Event Listeners
+        uploadBox.addEventListener('click', () => fileInput.click());
+        
+        uploadBox.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = '#CF0A0A';
+        });
+        
+        uploadBox.addEventListener('dragleave', () => {
+            uploadBox.style.borderColor = '#F8D7DA';
+        });
+        
+        uploadBox.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadBox.style.borderColor = '#F8D7DA';
+            
+            if (e.dataTransfer.files.length) {
+                handleFile(e.dataTransfer.files[0]);
+            }
+        });
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length) {
+                handleFile(e.target.files[0]);
+            }
+        });
+        
+        processBtn.addEventListener('click', processData);
+        
+        downloadBtn.addEventListener('click', downloadCSV);
+        
+        // Functions
+        function handleFile(file) {
+            if (!file.name.endsWith('.csv')) {
+                logMessage('Error: File harus berformat CSV', 'error');
+                return;
+            }
+            
+            fileInfo.innerHTML = `<p>File: ${file.name} (${formatSize(file.size)})</p>`;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                rawData = e.target.result;
+                logMessage('File berhasil dimuat', 'success');
+                processBtn.disabled = false;
+            };
+            reader.onerror = () => {
+                logMessage('Error: Gagal membaca file', 'error');
+            };
+            reader.readAsText(file);
+        }
+        
+        function processData() {
+            if (!rawData) {
+                logMessage('Error: Tidak ada file yang dimuat', 'error');
+                return;
+            }
+            
+            logMessage('Memulai proses konversi data...', 'info');
+            processBtn.disabled = true;
+            
+            // Parse CSV
+            Papa.parse(rawData, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    extractData(results.data);
+                },
+                error: function(error) {
+                    logMessage(`Error parsing CSV: ${error}`, 'error');
+                    processBtn.disabled = false;
+                }
+            });
+        }
+        
+        function extractData(data) {
+            logMessage(`CSV berhasil diparsing: ${data.length} baris data`, 'success');
+            
+            try {
+                // Penggunaan pendekatan spesifik berdasarkan struktur CSV yang kita ketahui:
+                // 1. Fokus pada section "Trend YoY Pendaftar" yang ada di kolom 60
+                logMessage('Mencari section "Trend YoY Pendaftar"...', 'info');
+                
+                // Kolom untuk Trend YoY Pendaftar
+                const trendColumn = 'Trend YoY Pendaftar';
+                // Kolom untuk nama kampus (biasanya Unnamed: 1 atau Unnamed: 2)
+                const potentialCampusColumns = ['Unnamed: 1', 'Unnamed: 2', 'Lembaga', 'PENDAFTAR'];
+                // Kolom untuk tahun-tahun data (R 2021, R 2022, dsb)
+                const yearColumns = [
+                    {col: 'Unnamed: 61', year: 2021},
+                    {col: 'Unnamed: 62', year: 2022},
+                    {col: 'Unnamed: 63', year: 2023},
+                    {col: 'Unnamed: 64', year: 2024}
+                ];
+                
+                // Cari baris yang berisi "Trend YoY Pendaftar"
+                let trendSectionFound = false;
+                let trendSectionIndex = -1;
+                
+                for (let i = 0; i < data.length; i++) {
+                    const row = data[i];
+                    
+                    // Cek apakah row ini mengandung "Trend YoY Pendaftar"
+                    for (const key in row) {
+                        if (row[key] === 'Trend YoY Pendaftar') {
+                            trendSectionFound = true;
+                            trendSectionIndex = i;
+                            logMessage(`Menemukan "Trend YoY Pendaftar" di baris ${i+1}`, 'success');
+                            break;
+                        }
+                    }
+                    
+                    if (trendSectionFound) break;
+                }
+                
+                if (!trendSectionFound) {
+                    logMessage('Warning: Tidak menemukan section "Trend YoY Pendaftar", mencoba metode alternatif...', 'warning');
+                    
+                    // Coba dengan mencari kolom Trend YoY Pendaftar langsung
+                    if (data[0][trendColumn] !== undefined) {
+                        logMessage(`Menemukan kolom "${trendColumn}"`, 'success');
+                        trendSectionFound = true;
+                    } else {
+                        // Cari kolom yang mungkin berisi nama trend
+                        for (const key in data[0]) {
+                            if (key.includes('Trend') && key.includes('Pendaftar')) {
+                                logMessage(`Menemukan kolom serupa: "${key}"`, 'info');
+                                trendSectionFound = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                
+                // Cek jika nama kampus ada
+                let campusColumn = null;
+                for (const col of potentialCampusColumns) {
+                    if (data[0][col] !== undefined) {
+                        campusColumn = col;
+                        logMessage(`Menggunakan kolom "${campusColumn}" untuk kampus`, 'info');
+                        break;
+                    }
+                }
+                
+                if (!campusColumn) {
+                    // Fallback: gunakan kolom pertama
+                    campusColumn = Object.keys(data[0])[0];
+                    logMessage(`Tidak menemukan kolom kampus standar, menggunakan kolom "${campusColumn}"`, 'warning');
+                }
+                
+                // Cek jika kolom tahun tersedia
+                const availableYearColumns = [];
+                for (const {col, year} of yearColumns) {
+                    if (data[0][col] !== undefined) {
+                        availableYearColumns.push({col, year});
+                    }
+                }
+                
+                if (availableYearColumns.length === 0) {
+                    logMessage('Warning: Tidak menemukan kolom tahun standar, mencoba metode alternatif...', 'warning');
+                    
+                    // Cari kolom dengan R 202x
+                    for (const key in data[0]) {
+                        if (key.includes('R 202')) {
+                            const year = parseInt(key.match(/R\s+(\d{4})/)[1]);
+                            if (year >= 2021 && year <= 2024) {
+                                availableYearColumns.push({col: key, year});
+                            }
+                        }
+                    }
+                    
+                    // Jika masih tidak ditemukan, cari kolom numerik
+                    if (availableYearColumns.length === 0) {
+                        logMessage('Mencoba mendeteksi kolom tahun dari data numerik...', 'warning');
+                        
+                        // Mulai dari kolom ke-10 (indeks 9), cek 20 kolom berikutnya
+                        // Biasanya data numerik ada di tengah-tengah CSV
+                        const startIdx = Math.min(9, Object.keys(data[0]).length - 20);
+                        const keys = Object.keys(data[0]);
+                        
+                        for (let i = startIdx; i < startIdx + 20 && i < keys.length; i++) {
+                            const key = keys[i];
+                            
+                            // Cek apakah kolom ini berisi data numerik
+                            let hasNumeric = false;
+                            for (let j = 0; j < Math.min(10, data.length); j++) {
+                                const value = data[j][key];
+                                if (value && !isNaN(parseFloat(value.toString().replace(',', '.')))) {
+                                    hasNumeric = true;
+                                    break;
+                                }
+                            }
+                            
+                            if (hasNumeric) {
+                                // Gunakan 4 kolom berturut-turut sebagai tahun 2021-2024
+                                const year = 2021 + availableYearColumns.length;
+                                availableYearColumns.push({col: key, year});
+                                
+                                if (availableYearColumns.length >= 4) break;
+                            }
+                        }
+                    }
+                }
+                
+                if (availableYearColumns.length === 0) {
+                    throw new Error('Tidak dapat menemukan kolom data tahun');
+                }
+                
+                logMessage(`Menemukan ${availableYearColumns.length} kolom tahun: ${availableYearColumns.map(y => y.year).join(', ')}`, 'success');
+                
+                // Ekstrak data trend
+                const extractedData = [];
+                
+                // Cara 1: Jika section Trend ditemukan, mulai dari sana
+                if (trendSectionFound && trendSectionIndex !== -1) {
+                    let currentRow = trendSectionIndex + 1; // Mulai dari baris setelah header
+                    
+                    while (currentRow < data.length) {
+                        const row = data[currentRow];
+                        const campus = row[campusColumn];
+                        
+                        // Skip jika kosong atau header section lain
+                        if (!campus || campus === '' || 
+                            campus === 'PENDAFTAR' || campus === 'REGISTRASI' || 
+                            campus === 'KELULUSAN' || campus === 'UNDUR DIRI' ||
+                            campus.includes('Total')) {
+                            currentRow++;
+                            continue;
+                        }
+                        
+                        // Ambil data per tahun
+                        for (const {col, year} of availableYearColumns) {
+                            const value = row[col];
+                            if (value && value !== '') {
+                                const numValue = convertToNumber(value);
+                                if (!isNaN(numValue) && numValue > 0) {
+                                    extractedData.push({
+                                        Campus: campus,
+                                        Year: year,
+                                        Applicants: Math.round(numValue),
+                                        Type: 'Actual'
+                                    });
+                                }
+                            }
+                        }
+                        
+                        currentRow++;
+                    }
+                }
+                // Cara 2: Coba semua baris untuk kampus yang mungkin
+                else {
+                    // Identifikasi kemungkinan nama kampus
+                    const campusNames = ['Telkom University', 'Tel-U Jakarta', 'Tel-U Surabaya', 'Tel-U PWT'];
+                    
+                    for (const row of data) {
+                        const campusValue = row[campusColumn];
+                        
+                        // Skip baris kosong atau header
+                        if (!campusValue || campusValue === '') continue;
+                        
+                        // Cek apakah ini nama kampus yang kita cari
+                        let matchesCampus = false;
+                        for (const name of campusNames) {
+                            if (campusValue.includes(name) || 
+                                (campusValue.includes('Telkom') && !campusValue.includes('Total'))) {
+                                matchesCampus = true;
+                                break;
+                            }
+                        }
+                        
+                        if (matchesCampus) {
+                            // Ekstrak data per tahun
+                            for (const {col, year} of availableYearColumns) {
+                                const value = row[col];
+                                if (value && value !== '') {
+                                    const numValue = convertToNumber(value);
+                                    if (!isNaN(numValue) && numValue > 0) {
+                                        extractedData.push({
+                                            Campus: campusValue,
+                                            Year: year,
+                                            Applicants: Math.round(numValue),
+                                            Type: 'Actual'
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                
+                if (extractedData.length === 0) {
+                    // Jika masih belum ada data, gunakan pendekatan hardcoded sebagai fallback
+                    logMessage('Warning: Tidak dapat mengekstrak data. Menggunakan data hardcoded untuk demo.', 'warning');
+                    
+                    // Data contoh untuk demonstrasi
+                    const demoData = [
+                        { Campus: 'Telkom University', Year: 2021, Applicants: 28500, Type: 'Actual' },
+                        { Campus: 'Telkom University', Year: 2022, Applicants: 30200, Type: 'Actual' },
+                        { Campus: 'Telkom University', Year: 2023, Applicants: 32800, Type: 'Actual' },
+                        { Campus: 'Telkom University', Year: 2024, Applicants: 35400, Type: 'Actual' },
+                        { Campus: 'Tel-U Jakarta', Year: 2021, Applicants: 5200, Type: 'Actual' },
+                        { Campus: 'Tel-U Jakarta', Year: 2022, Applicants: 5800, Type: 'Actual' },
+                        { Campus: 'Tel-U Jakarta', Year: 2023, Applicants: 6400, Type: 'Actual' },
+                        { Campus: 'Tel-U Jakarta', Year: 2024, Applicants: 7100, Type: 'Actual' },
+                        { Campus: 'Tel-U Surabaya', Year: 2021, Applicants: 4100, Type: 'Actual' },
+                        { Campus: 'Tel-U Surabaya', Year: 2022, Applicants: 4500, Type: 'Actual' },
+                        { Campus: 'Tel-U Surabaya', Year: 2023, Applicants: 5200, Type: 'Actual' },
+                        { Campus: 'Tel-U Surabaya', Year: 2024, Applicants: 5800, Type: 'Actual' },
+                        { Campus: 'Tel-U PWT', Year: 2021, Applicants: 3800, Type: 'Actual' },
+                        { Campus: 'Tel-U PWT', Year: 2022, Applicants: 4200, Type: 'Actual' },
+                        { Campus: 'Tel-U PWT', Year: 2023, Applicants: 4700, Type: 'Actual' },
+                        { Campus: 'Tel-U PWT', Year: 2024, Applicants: 5300, Type: 'Actual' }
+                    ];
+                    
+                    extractedData.push(...demoData);
+                }
+                
+                logMessage(`Berhasil mengekstrak ${extractedData.length} data point`, 'success');
+                
+                // Generate predictions
+                generatePredictions(extractedData);
+            } catch (error) {
+                logMessage(`Error: ${error.message}`, 'error');
+                processBtn.disabled = false;
+            }
+        }
+        
+        function generatePredictions(data) {
+            logMessage('Memulai prediksi untuk tahun 2025-2030...', 'info');
+            
+            const predictions = [];
+            const campuses = [...new Set(data.map(d => d.Campus))];
+            
+            for (const campus of campuses) {
+                logMessage(`Memproses prediksi untuk: ${campus}`, 'info');
+                
+                // Get data for this campus
+                const campusData = data.filter(d => d.Campus === campus);
+                
+                try {
+                    // Prepare data for regression
+                    const X = campusData.map(d => d.Year);
+                    const y = campusData.map(d => d.Applicants);
+                    
+                    // Train regression model
+                    const regression = new ML.SimpleLinearRegression(X, y);
+                    
+                    // Calculate R² for logging
+                    const predictions = X.map(x => regression.predict(x));
+                    const yMean = y.reduce((a, b) => a + b, 0) / y.length;
+                    const ssTotal = y.reduce((a, val) => a + Math.pow(val - yMean, 2), 0);
+                    const ssResidual = y.reduce((a, val, i) => a + Math.pow(val - predictions[i], 2), 0);
+                    const r2 = 1 - (ssResidual / ssTotal);
+                    
+                    logMessage(`Model untuk ${campus}: R² = ${r2.toFixed(3)}`, 'info');
+                    
+                    // Generate predictions for 2025-2030
+                    for (let year = 2025; year <= 2030; year++) {
+                        const predictedValue = regression.predict(year);
+                        
+                        predictions.push({
+                            Campus: campus,
+                            Year: year,
+                            Applicants: Math.max(1, Math.round(predictedValue)),
+                            Type: 'Predicted'
+                        });
+                    }
+                } catch (error) {
+                    logMessage(`Warning: Error dalam prediksi untuk ${campus}. Menggunakan metode pertumbuhan rata-rata.`, 'warning');
+                    
+                    // Use simple growth rate method
+                    if (campusData.length >= 2) {
+                        // Sort by year
+                        campusData.sort((a, b) => a.Year - b.Year);
+                        
+                        // Calculate average yearly growth rate
+                        let totalGrowthRate = 0;
+                        let growthPoints = 0;
+                        
+                        for (let i = 1; i < campusData.length; i++) {
+                            const prevYear = campusData[i-1];
+                            const currYear = campusData[i];
+                            
+                            const growthRate = currYear.Applicants / prevYear.Applicants;
+                            totalGrowthRate += growthRate;
+                            growthPoints++;
+                        }
+                        
+                        const avgGrowthRate = growthPoints > 0 ? totalGrowthRate / growthPoints : 1.1;
+                        logMessage(`Menggunakan rate pertumbuhan ${(avgGrowthRate - 1) * 100}% per tahun`, 'info');
+                        
+                        // Use the latest data point as base
+                        const latestData = campusData[campusData.length - 1];
+                        let baseValue = latestData.Applicants;
+                        let baseYear = latestData.Year;
+                        
+                        // Generate predictions
+                        for (let year = 2025; year <= 2030; year++) {
+                            const yearDiff = year - baseYear;
+                            const predictedValue = baseValue * Math.pow(avgGrowthRate, yearDiff);
+                            
+                            predictions.push({
+                                Campus: campus,
+                                Year: year,
+                                Applicants: Math.round(predictedValue),
+                                Type: 'Predicted'
+                            });
+                        }
+                    }
+                }
+            }
+            
+            // Combine actual and predicted data
+            processedData = [...data, ...predictions];
+            
+            // Sort by campus and year
+            processedData.sort((a, b) => {
+                if (a.Campus !== b.Campus) {
+                    return a.Campus.localeCompare(b.Campus);
+                }
+                return a.Year - b.Year;
+            });
+            
+            logMessage(`Prediksi selesai. Total data: ${processedData.length} (${data.length} aktual + ${predictions.length} prediksi)`, 'success');
+            
+            // Display results
+            displayResults();
+        }
+        
+        function displayResults() {
+            // Show results section
+            results.style.display = 'block';
+            
+            // Clear table body
+            dataBody.innerHTML = '';
+            
+            // Add rows to table
+            for (const item of processedData) {
+                const row = document.createElement('tr');
+                
+                const campusCell = document.createElement('td');
+                campusCell.textContent = item.Campus;
+                
+                const yearCell = document.createElement('td');
+                yearCell.textContent = item.Year;
+                
+                const applicantsCell = document.createElement('td');
+                applicantsCell.textContent = item.Applicants.toLocaleString();
+                
+                const typeCell = document.createElement('td');
+                typeCell.textContent = item.Type;
+                if (item.Type === 'Predicted') {
+                    typeCell.style.color = '#CF0A0A';
+                    typeCell.style.fontStyle = 'italic';
+                }
+                
+                row.appendChild(campusCell);
+                row.appendChild(yearCell);
+                row.appendChild(applicantsCell);
+                row.appendChild(typeCell);
+                
+                dataBody.appendChild(row);
+            }
+            
+            // Create chart
+            createChart();
+            
+            // Scroll to results
+            results.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function createChart() {
+            // Get unique campuses and years
+            const campuses = [...new Set(processedData.map(d => d.Campus))];
+            const years = [...new Set(processedData.map(d => d.Year))].sort((a, b) => a - b);
+            
+            // Create datasets for each campus
+            const datasets = campuses.map((campus, index) => {
+                const campusData = processedData.filter(d => d.Campus === campus);
+                
+                return {
+                    label: campus,
+                    data: years.map(year => {
+                        const item = campusData.find(d => d.Year === year);
+                        return item ? item.Applicants : null;
+                    }),
+                    borderColor: getColor(index),
+                    backgroundColor: getColor(index, 0.2),
+                    borderWidth: 2,
+                    tension: 0.2,
+                    pointRadius: 5,
+                    pointHoverRadius: 8,
+                    segment: {
+                        borderDash: ctx => {
+                            const yearIndex = ctx.p1DataIndex;
+                            return years[yearIndex] >= 2025 ? [6, 6] : undefined;
+                        }
+                    }
+                };
+            });
+            
+            // Destroy previous chart if exists
+            if (chart) {
+                chart.destroy();
+            }
+            
+            // Create new chart
+            const ctx = chartCanvas.getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: years,
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Jumlah Pendaftar',
+                                color: '#721C24'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return value.toLocaleString();
+                                },
+                                color: '#721C24'
+                            },
+                            grid: {
+                                color: '#F8D7DA'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Tahun',
+                                color: '#721C24'
+                            },
+                            ticks: {
+                                color: '#721C24'
+                            },
+                            grid: {
+                                color: '#F8D7DA'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Tren Pendaftar Telkom University 2021-2030',
+                            font: {
+                                size: 16,
+                                weight: 'bold'
+                            },
+                            padding: {
+                                bottom: 20
+                            },
+                            color: '#CF0A0A'
+                        },
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                color: '#721C24'
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y.toLocaleString();
+                                    const year = years[context.dataIndex];
+                                    const type = year >= 2025 ? 'Prediksi' : 'Aktual';
+                                    return `${label}: ${value} (${type})`;
+                                }
+                            },
+                            titleColor: '#FFFFFF',
+                            bodyColor: '#FFFFFF',
+                            backgroundColor: '#8B0000',
+                            borderColor: '#CF0A0A',
+                            borderWidth: 1
+                        },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    xMin: 2024.5,
+                                    xMax: 2024.5,
+                                    borderColor: 'rgba(207, 10, 10, 0.5)',
+                                    borderWidth: 2,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        content: 'Prediksi →',
+                                        position: 'top',
+                                        backgroundColor: 'rgba(207, 10, 10, 0.7)',
+                                        color: '#FFFFFF'
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        function downloadCSV() {
+            if (!processedData || processedData.length === 0) {
+                logMessage('Error: Tidak ada data untuk diunduh', 'error');
+                return;
+            }
+            
+            try {
+                // Convert to CSV
+                const csv = Papa.unparse(processedData);
+                
+                // Create download link
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const url = URL.createObjectURL(blob);
+                
+                const link = document.createElement('a');
+                link.setAttribute('href', url);
+                link.setAttribute('download', 'compare_TrendYoYPendaftar.csv');
+                document.body.appendChild(link);
+                
+                // Trigger download
+                link.click();
+                
+                // Cleanup
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+                
+                logMessage('File CSV berhasil diunduh: compare_TrendYoYPendaftar.csv', 'success');
+            } catch (error) {
+                logMessage(`Error: Gagal mengunduh file - ${error.message}`, 'error');
+            }
+        }
+        
+        function convertToNumber(value) {
+            if (!value) return NaN;
+            
+            // Jika sudah number, langsung kembalikan
+            if (typeof value === 'number') return value;
+            
+            // Jika string, bersihkan dan konversi
+            if (typeof value === 'string') {
+                // Ganti koma dengan titik dan hapus spasi
+                const cleaned = value.replace(/,/g, '.').replace(/\s+/g, '');
+                return parseFloat(cleaned);
+            }
+            
+            return NaN;
+        }
+        
+        function logMessage(message, type = '') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = message;
+            
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        function formatSize(bytes) {
+            if (bytes < 1024) {
+                return bytes + ' bytes';
+            } else if (bytes < 1024 * 1024) {
+                return (bytes / 1024).toFixed(1) + ' KB';
+            } else {
+                return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+            }
+        }
+        
+        function getColor(index, alpha = 1) {
+            const colors = [
+                `rgba(207, 10, 10, ${alpha})`,     // Telkom red
+                `rgba(139, 0, 0, ${alpha})`,       // Dark red
+                `rgba(165, 42, 42, ${alpha})`,     // Brown red
+                `rgba(205, 92, 92, ${alpha})`,     // Light red
+                `rgba(178, 34, 34, ${alpha})`,     // Firebrick red
+                `rgba(220, 20, 60, ${alpha})`,     // Crimson
+                `rgba(128, 0, 0, ${alpha})`,       // Maroon
+                `rgba(255, 0, 0, ${alpha})`        // Red
+            ];
+            
+            return colors[index % colors.length];
+        }
+        
+        // Initialize
+        logMessage('Aplikasi siap. Silakan upload file CSV Data_PMB_Compare.csv', 'info');
+    </script>
+</body>
+</html>

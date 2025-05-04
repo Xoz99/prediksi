@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ekspor Data per Lembaga - Prediksi Admisi</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container {
+            max-width: 900px;
+            margin-top: 30px;
+            margin-bottom: 50px;
+        }
+        .card {
+            margin-bottom: 30px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .alert {
+            display: none;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .detected-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+        .step-number {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background-color: #0d6efd;
+            color: white;
+            text-align: center;
+            line-height: 30px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        .lembaga-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            background-color: white;
+        }
+        .manual-columns {
+            display: none;
+            background-color: #e9f7fe;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border: 1px solid #bce0fd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Ekspor Data per Lembaga</h1>
+        
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="card-title mb-0">Upload dan Ekspor Data per Lembaga</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-4">
+                    <div class="col-md-12">
+                        <div class="mb-2">
+                            <span class="step-number">1</span>
+                            <span class="fw-bold">Upload file data mentah</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="step-number">2</span>
+                            <span class="fw-bold">Periksa deteksi format data</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="step-number">3</span>
+                            <span class="fw-bold">Konfigurasi kolom jika diperlukan</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="step-number">4</span>
+                            <span class="fw-bold">Proses dan unduh hasil per lembaga</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="exportForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="fileInput" class="form-label">File Data (CSV atau Excel)</label>
+                        <input type="file" class="form-control" id="fileInput" name="file" accept=".csv,.xlsx,.xls" required>
+                        <div class="form-text">Unggah file data mentah dalam format CSV atau Excel dengan kolom Tahun, Lembaga, Pendaftar, dan Registrasi.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <button type="button" id="analyzeBtn" class="btn btn-secondary">Periksa Format</button>
+                        <button type="button" id="showManualColumnsBtn" class="btn btn-outline-primary">Pilih Kolom Manual</button>
+                    </div>
+                    
+                    <div class="detected-info" id="detectedInfo">
+                        <h6>Format Data Terdeteksi:</h6>
+                        <div id="formatDetails">
+                                                    </div>
+                    </div>
+                    
+                    <div class="manual-columns" id="manualColumns">
+                        <h6>Konfigurasi Kolom Manual</h6>
+                        <p class="text-muted small">Gunakan menu dropdown berikut untuk memilih kolom yang sesuai dari data Anda.</p>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="tahunColumn" class="form-label">Kolom Tahun</label>
+                                <select class="form-select" id="tahunColumn" name="tahun_column">
+                                    <option value="">-- Pilih Kolom Tahun --</option>
+                                                                    </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="lembagaColumn" class="form-label">Kolom Lembaga</label>
+                                <select class="form-select" id="lembagaColumn" name="lembaga_column">
+                                    <option value="">-- Pilih Kolom Lembaga --</option>
+                                                                    </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="pendaftarColumn" class="form-label">Kolom Pendaftar</label>
+                                <select class="form-select" id="pendaftarColumn" name="pendaftar_column">
+                                    <option value="">-- Pilih Kolom Pendaftar --</option>
+                                                                    </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="registrasiColumn" class="form-label">Kolom Registrasi (NIM)</label>
+                                <select class="form-select" id="registrasiColumn" name="registrasi_column">
+                                    <option value="">-- Pilih Kolom Registrasi --</option>
+                                                                    </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3 mt-4">
+                        <label for="predictYears" class="form-label">Jumlah Tahun Prediksi</label>
+                        <input type="number" class="form-control" id="predictYears" name="predict_years" value="5" min="0" max="20">
+                        <div class="form-text">Berapa tahun ke depan yang ingin diprediksi.</div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Proses dan Unduh</button>
+                </form>
+                
+                <div class="loader" id="loader"></div>
+                
+                <div class="alert alert-success mt-3" id="successAlert">
+                    Data berhasil ditransformasi! File ZIP dengan data per lembaga akan diunduh secara otomatis.
+                </div>
+                
+                <div class="alert alert-danger mt-3" id="errorAlert">
+                    <p><strong>Terjadi kesalahan:</strong></p>
+                    <p id="errorMessage"></p>
+                    <div id="errorHelp" class="mt-2"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="card-title mb-0">Informasi Format Data</h5>
+            </div>
+            <div class="card-body">
+                <p>Tool ini mengubah data mentah admisi menjadi data per lembaga dengan prediksi untuk tahun-tahun mendatang.</p>
+                
+                <h6 class="mt-3">Format Input yang Diperlukan:</h6>
+                <ul>
+                    <li>File CSV atau Excel (.xlsx, .xls)</li>
+                    <li>Harus memiliki kolom-kolom berikut:
+                        <ul>
+                            <li><strong>Tahun</strong>: tahun penerimaan (misalnya 2020, 2021, 2022)</li>
+                            <li><strong>Lembaga</strong>: lembaga, fakultas, atau unit pendidikan</li>
+                            <li><strong>Pendaftar</strong>: jumlah pendaftar per lembaga (atau UP3 Net)</li>
+                            <li><strong>Registrasi</strong>: jumlah yang registrasi/NIM per lembaga</li>
+                        </ul>
+                    </li>
+                </ul>
+                
+                <h6 class="mt-3">Format Output:</h6>
+                <ul>
+                    <li>File ZIP berisi:
+                        <ul>
+                            <li>File CSV dengan semua data lembaga dan prediksi</li>
+                            <li>File CSV terpisah untuk masing-masing lembaga</li>
+                        </ul>
+                    </li>
+                    <li>Setiap file berisi kolom: Tahun, Lembaga, Realisasi Pendaftar, Realisasi Registrasi (NIM)</li>
+                    <li>Termasuk data historis dan prediksi untuk tahun-tahun mendatang</li>
+                </ul>
+                
+                <div class="alert alert-warning mt-3">
+                    <strong>Catatan:</strong> Jika sistem tidak dapat mendeteksi kolom dengan benar secara otomatis, gunakan tombol "Pilih Kolom Manual" untuk mengkonfigurasi kolom secara manual.
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const analyzeBtn = document.getElementById('analyzeBtn');
+            const showManualColumnsBtn = document.getElementById('showManualColumnsBtn');
+            const exportForm = document.getElementById('exportForm');
+            const fileInput = document.getElementById('fileInput');
+            const loader = document.getElementById('loader');
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            const errorHelp = document.getElementById('errorHelp');
+            const detectedInfo = document.getElementById('detectedInfo');
+            const formatDetails = document.getElementById('formatDetails');
+            const manualColumns = document.getElementById('manualColumns');
+            
+
+            const tahunColumn = document.getElementById('tahunColumn');
+            const lembagaColumn = document.getElementById('lembagaColumn');
+            const pendaftarColumn = document.getElementById('pendaftarColumn');
+            const registrasiColumn = document.getElementById('registrasiColumn');
+            
+
+            fileInput.addEventListener('change', function() {
+                successAlert.style.display = 'none';
+                errorAlert.style.display = 'none';
+                detectedInfo.style.display = 'none';
+                manualColumns.style.display = 'none';
+                
+
+                populateColumnDropdowns([]);
+            });
+            
+
+            function populateColumnDropdowns(columns) {
+
+                tahunColumn.innerHTML = '<option value="">-- Pilih Kolom Tahun --</option>';
+                lembagaColumn.innerHTML = '<option value="">-- Pilih Kolom Lembaga --</option>';
+                pendaftarColumn.innerHTML = '<option value="">-- Pilih Kolom Pendaftar --</option>';
+                registrasiColumn.innerHTML = '<option value="">-- Pilih Kolom Registrasi --</option>';
+                
+
+                columns.forEach(column => {
+                    const tahunOption = document.createElement('option');
+                    tahunOption.value = column;
+                    tahunOption.textContent = column;
+                    tahunColumn.appendChild(tahunOption);
+                    
+                    const lembagaOption = document.createElement('option');
+                    lembagaOption.value = column;
+                    lembagaOption.textContent = column;
+                    lembagaColumn.appendChild(lembagaOption);
+                    
+                    const pendaftarOption = document.createElement('option');
+                    pendaftarOption.value = column;
+                    pendaftarOption.textContent = column;
+                    pendaftarColumn.appendChild(pendaftarOption);
+                    
+                    const registrasiOption = document.createElement('option');
+                    registrasiOption.value = column;
+                    registrasiOption.textContent = column;
+                    registrasiColumn.appendChild(registrasiOption);
+                });
+            }
+            
+
+            showManualColumnsBtn.addEventListener('click', function() {
+                if (manualColumns.style.display === 'none' || manualColumns.style.display === '') {
+                    manualColumns.style.display = 'block';
+                    showManualColumnsBtn.textContent = 'Sembunyikan Kolom Manual';
+                    
+
+                    if (!fileInput.files || fileInput.files.length === 0) {
+                        errorMessage.textContent = 'Silakan pilih file terlebih dahulu';
+                        errorHelp.textContent = '';
+                        errorAlert.style.display = 'block';
+                        manualColumns.style.display = 'none';
+                        showManualColumnsBtn.textContent = 'Pilih Kolom Manual';
+                        return;
+                    }
+                    
+
+                    if (tahunColumn.options.length <= 1) {
+
+                        analyzeBtn.click();
+                    }
+                } else {
+                    manualColumns.style.display = 'none';
+                    showManualColumnsBtn.textContent = 'Pilih Kolom Manual';
+                }
+            });
+            
+
+            analyzeBtn.addEventListener('click', async function() {
+
+                if (!fileInput.files || fileInput.files.length === 0) {
+                    errorMessage.textContent = 'Silakan pilih file terlebih dahulu';
+                    errorHelp.textContent = '';
+                    errorAlert.style.display = 'block';
+                    return;
+                }
+                
+
+                successAlert.style.display = 'none';
+                errorAlert.style.display = 'none';
+                detectedInfo.style.display = 'none';
+                loader.style.display = 'block';
+                
+                const formData = new FormData();
+                formData.append('file', fileInput.files[0]);
+                
+                try {
+                    const response = await fetch('/analyze-lembaga-format', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    loader.style.display = 'none';
+                    
+                    if (data.error) {
+                        errorMessage.textContent = data.error;
+                        errorHelp.textContent = data.detail || 'Pastikan file Anda dalam format yang valid.';
+                        errorAlert.style.display = 'block';
+                    } else {
+
+                        detectedInfo.style.display = 'block';
+                        
+
+                        populateColumnDropdowns(data.detected_format.all_columns);
+                        
+
+                        if (data.detected_format.found_columns.tahun) {
+                            tahunColumn.value = data.detected_format.found_columns.tahun;
+                        } else if (data.detected_format.possible_year_column) {
+                            tahunColumn.value = data.detected_format.possible_year_column;
+                        }
+                        
+                        if (data.detected_format.found_columns.lembaga) {
+                            lembagaColumn.value = data.detected_format.found_columns.lembaga;
+                        }
+                        
+                        if (data.detected_format.found_columns.pendaftar) {
+                            pendaftarColumn.value = data.detected_format.found_columns.pendaftar;
+                        }
+                        
+                        if (data.detected_format.found_columns.registrasi) {
+                            registrasiColumn.value = data.detected_format.found_columns.registrasi;
+                        }
+                        
+                        let html = `
+                            <p><strong>File:</strong> ${data.file_info.filename}</p>
+                            <p><strong>Jumlah baris:</strong> ${data.file_info.rows}</p>
+                            <p><strong>Jumlah kolom:</strong> ${data.file_info.columns}</p>
+                        `;
+                        
+
+                        if (Object.keys(data.detected_format.found_columns).length > 0) {
+                            html += `<p><strong>Kolom yang ditemukan:</strong></p><ul>`;
+                            for (const [key, value] of Object.entries(data.detected_format.found_columns)) {
+                                html += `<li>${key}: ${value}</li>`;
+                            }
+                            html += `</ul>`;
+                        }
+                        
+
+                        if (data.detected_format.missing_columns.length > 0) {
+                            html += `<p><strong>Kolom yang tidak ditemukan:</strong></p><ul>`;
+                            data.detected_format.missing_columns.forEach(col => {
+                                html += `<li>${col}</li>`;
+                            });
+                            html += `</ul>`;
+                            
+
+                            html += `<div class="alert alert-warning">
+                                <strong>Rekomendasi:</strong> Beberapa kolom penting tidak terdeteksi. 
+                                Silakan gunakan <button type="button" class="btn btn-sm btn-warning" onclick="document.getElementById('showManualColumnsBtn').click()">Pilih Kolom Manual</button> 
+                                untuk mengkonfigurasi kolom secara manual.
+                            </div>`;
+                        }
+                        
+
+                        if (data.data_overview.years && data.data_overview.years.length > 0) {
+                            html += `<p><strong>Tahun yang tersedia:</strong> ${data.data_overview.years.join(', ')}</p>`;
+                        }
+                        
+
+                        if (data.data_overview.unique_lembaga > 0) {
+                            html += `<p><strong>Jumlah lembaga terdeteksi:</strong> ${data.data_overview.unique_lembaga}</p>`;
+                            
+                            if (data.data_overview.lembaga_list && data.data_overview.lembaga_list.length > 0) {
+                                html += `<p><strong>Daftar lembaga (sampel):</strong></p>`;
+                                html += `<div class="lembaga-list">`;
+                                data.data_overview.lembaga_list.forEach(lembaga => {
+                                    html += `<div>${lembaga}</div>`;
+                                });
+                                html += `</div>`;
+                            }
+                        }
+                        
+
+                        if (data.transformation_possible) {
+                            html += `<div class="alert alert-success mt-3">Format data valid untuk transformasi dan ekspor per lembaga!</div>`;
+                        } else {
+                            html += `<div class="alert alert-danger mt-3">
+                                Format data belum memenuhi syarat untuk transformasi. 
+                                Gunakan <button type="button" class="btn btn-sm btn-danger" onclick="document.getElementById('showManualColumnsBtn').click()">Pilih Kolom Manual</button> 
+                                untuk mengkonfigurasi kolom yang diperlukan.
+                            </div>`;
+                            
+
+                            manualColumns.style.display = 'block';
+                            showManualColumnsBtn.textContent = 'Sembunyikan Kolom Manual';
+                        }
+                        
+                        formatDetails.innerHTML = html;
+                    }
+                } catch (error) {
+                    loader.style.display = 'none';
+                    errorMessage.textContent = 'Terjadi kesalahan jaringan';
+                    errorHelp.textContent = error.message || '';
+                    errorAlert.style.display = 'block';
+                }
+            });
+            
+
+            exportForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+
+                successAlert.style.display = 'none';
+                errorAlert.style.display = 'none';
+                loader.style.display = 'block';
+                
+                const formData = new FormData(this);
+                
+                try {
+                    const response = await fetch('/export-by-lembaga', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (response.ok) {
+
+                        const contentType = response.headers.get('content-type');
+                        
+                        if (contentType && contentType.includes('application/json')) {
+
+                            const data = await response.json();
+                            loader.style.display = 'none';
+                            errorMessage.textContent = data.error || 'Terjadi kesalahan tidak diketahui.';
+                            errorHelp.textContent = data.detail || '';
+                            errorAlert.style.display = 'block';
+                        } else {
+
+                            const blob = await response.blob();
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            
+
+                            const contentDisposition = response.headers.get('content-disposition');
+                            let filename = 'data_lembaga_dengan_prediksi.zip';
+                            
+                            if (contentDisposition) {
+                                const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                                if (filenameMatch) {
+                                    filename = filenameMatch[1];
+                                }
+                            }
+                            
+                            a.href = url;
+                            a.download = filename;
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                            document.body.removeChild(a);
+                            
+                            loader.style.display = 'none';
+                            successAlert.style.display = 'block';
+                        }
+                    } else {
+
+                        loader.style.display = 'none';
+                        errorMessage.textContent = 'Terjadi kesalahan server.';
+                        errorHelp.textContent = await response.text();
+                        errorAlert.style.display = 'block';
+                    }
+                } catch (error) {
+                    loader.style.display = 'none';
+                    errorMessage.textContent = 'Terjadi kesalahan jaringan';
+                    errorHelp.textContent = error.message || '';
+                    errorAlert.style.display = 'block';
+                }
+            });
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

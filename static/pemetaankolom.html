@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Konversi Data Admisi TelU</title>
+    <style>
+        :root {
+            --primary-color: #CF0A0A; /* Merah Telkom */
+            --primary-dark: #8B0000; /* Merah tua */
+            --secondary-color: #FFFFFF; /* Putih */
+            --accent-color: #A52A2A; /* Merah kecoklatan untuk aksen */
+            --bg-light: #FFF5F5; /* Background merah muda sangat pucat */
+            --text-dark: #333333;
+            --text-light: #721C24; /* Merah tua untuk teks sekunder */
+            --border-color: #F8D7DA; /* Border pink pucat */
+            --success-color: #A52A2A; /* Merah kecoklatan untuk success */
+            --danger-color: #CF0A0A; /* Merah untuk danger */
+            --warning-color: #CD5C5C; /* Merah muda tua untuk warning */
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        .logo span {
+            color: var(--secondary-color);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        nav ul li a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        
+        .main-content {
+            margin-top: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            padding: 30px;
+            border-top: 3px solid var(--primary-color);
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+        
+        h2 {
+            font-size: 22px;
+            margin: 20px 0 15px;
+            color: var(--primary-color);
+        }
+        
+        p {
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+        
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            padding: 30px;
+            text-align: center;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            background-color: var(--bg-light);
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .file-upload p {
+            margin: 15px 0;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .upload-btn {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .upload-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .preview-area {
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        table th, table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        table th {
+            background-color: #F8D7DA; /* Header merah muda pucat */
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        
+        table tr:hover {
+            background-color: #FFF0F0; /* Hover merah muda sangat pucat */
+        }
+        
+        .actions {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background-color: var(--primary-dark);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #700000; /* Merah tua sangat gelap */
+        }
+        
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #8B2222; /* Merah kecoklatan gelap */
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-warning {
+            background-color: var(--warning-color);
+            color: white;
+        }
+        
+        .btn-warning:hover {
+            background-color: #BC5050; /* Merah muda tua gelap */
+        }
+        
+        .disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background-color: #F8D7DA; /* Merah muda pucat */
+            color: #721C24; /* Merah tua */
+            border: 1px solid #F5C6CB; /* Border merah muda */
+        }
+        
+        .alert-danger {
+            background-color: #F8D7DA; /* Merah muda pucat */
+            color: #721C24; /* Merah tua */
+            border: 1px solid #F5C6CB; /* Border merah muda */
+        }
+        
+        .alert-warning {
+            background-color: #FFF3CD; /* Kuning pucat */
+            color: #856404; /* Coklat */
+            border: 1px solid #FFEEBA; /* Border kuning pucat */
+        }
+        
+        .alert-info {
+            background-color: #FFF0F0; /* Merah muda sangat pucat */
+            color: #721C24; /* Merah tua */
+            border: 1px solid #F8D7DA; /* Border merah muda pucat */
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .settings-panel {
+            background-color: #FFF0F0; /* Merah muda sangat pucat */
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        
+        .form-check {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        
+        .form-check-input {
+            margin-right: 10px;
+        }
+        
+        .tab-container {
+            margin-bottom: 20px;
+        }
+        
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+        }
+        
+        .tab-btn.active {
+            border-bottom-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            padding: 20px 0;
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-size: 14px;
+            background-color: var(--primary-dark);
+            color: white;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+            }
+            
+            .actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+        
+        .prediction-cell {
+            background-color: rgba(255, 242, 242, 0.5); /* Merah muda sangat pucat */
+            font-style: italic;
+        }
+
+        tr:hover .prediction-cell {
+            background-color: rgba(248, 215, 218, 0.7); /* Merah muda pucat saat hover */
+        }
+        
+        .tooltip {
+            position: absolute;
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            z-index: 1000;
+            max-width: 200px;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-top: 5px;
+            white-space: normal;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+        
+        .tooltip::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent var(--primary-dark) transparent;
+        }
+        
+        [data-tooltip] {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Tel-U <span>Data Converter</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#">Beranda</a></li>
+                    <li><a href="#">Bantuan</a></li>
+                    <li><a href="#">Tentang</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="main-content">
+            <h1>Sistem Konversi Data Admisi TelU</h1>
+            <p>Aplikasi ini membantu Anda mengkonversi data mentah (CSV) menjadi format data matang yang dibutuhkan untuk analisis lanjutan.</p>
+            
+            <div class="alert alert-info hidden" id="notificationArea"></div>
+            
+            <div class="tab-container">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" data-tab="upload">1. Unggah Data</button>
+                    <button class="tab-btn" data-tab="process" id="processTab" disabled>2. Proses Data</button>
+                    <button class="tab-btn" data-tab="result" id="resultTab" disabled>3. Hasil Konversi</button>
+                </div>
+                
+                <div class="tab-content">
+                    <!-- Tab 1: Upload Data -->
+                    <div class="tab-pane active" id="upload">
+                        <h2>Unggah Data Mentah</h2>
+                        <p>Unggah file CSV data mentah Admisi TelU yang ingin dikonversi.</p>
+                        
+                        <div class="file-upload" id="dropArea">
+                            <img src="image-removebg-preview-3.png" alt="Upload icon" />
+                            <p>Seret file CSV ke sini atau klik tombol di bawah</p>
+                            <label class="upload-btn">
+                                Pilih File
+                                <input type="file" class="file-input" id="fileInput" accept=".csv">
+                            </label>
+                            <p id="fileName"></p>
+                        </div>
+                        
+                        <div class="preview-area hidden" id="previewArea">
+                            <h2>Pratinjau Data Mentah</h2>
+                            <div id="previewTable"></div>
+                            
+                            <div class="actions">
+                                <button class="btn btn-danger" id="cancelBtn">Batal</button>
+                                <button class="btn btn-primary" id="confirmUploadBtn">Lanjutkan ke Pemrosesan</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab 2: Process Data -->
+                    <div class="tab-pane" id="process">
+                        <h2>Pengaturan Konversi</h2>
+                        <p>Tentukan parameter konversi untuk data Anda.</p>
+                        
+                        <div class="settings-panel">
+                            <div class="form-group">
+                                <label for="delimiterSelect">Pemisah Kolom Data Mentah:</label>
+                                <select id="delimiterSelect" class="form-control">
+                                    <option value=";">Titik Koma (;)</option>
+                                    <option value=",">Koma (,)</option>
+                                    <option value="\t">Tab</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Pemetaan Kolom:</label>
+                                <div class="form-check">
+                                    <input type="checkbox" id="mapLembagaCheck" class="form-check-input" checked>
+                                    <label for="mapLembagaCheck">Konversi nama lembaga (Tel-U PWT → Tel-U PWK)</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Periode Data:</label>
+                                <div id="yearMappingArea">
+                                    <!-- Dinamis diisi dengan pemetaan tahun yang terdeteksi -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="actions">
+                            <button class="btn btn-secondary" id="backToUploadBtn">Kembali</button>
+                            <button class="btn btn-success" id="processDataBtn">Proses Data</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Tab 3: Results -->
+                    <div class="tab-pane" id="result">
+                        <h2>Hasil Konversi</h2>
+                        <p>Berikut adalah hasil konversi data menjadi format matang.</p>
+                        
+                        <div id="resultTable"></div>
+                        
+                        <div class="actions">
+                            <button class="btn btn-secondary" id="backToProcessBtn">Kembali</button>
+                            <button class="btn btn-primary" id="downloadBtn">Unduh Hasil CSV</button>
+                            <button class="btn btn-warning" id="predictFutureBtn">Prediksi s.d. 2030</button>
+                            <button class="btn btn-success" id="newConversionBtn">Konversi Data Baru</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>© 2025 Tel-U Data Converter | Developed for Telkom University</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let rawData = null;
+        let parsedData = null;
+        let convertedData = null;
+        let uniqueYears = [];
+        let uniqueLembaga = [];
+
+        // DOM Elements
+        const fileInput = document.getElementById('fileInput');
+        const dropArea = document.getElementById('dropArea');
+        const fileName = document.getElementById('fileName');
+        const previewArea = document.getElementById('previewArea');
+        const previewTable = document.getElementById('previewTable');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const confirmUploadBtn = document.getElementById('confirmUploadBtn');
+        const processTab = document.getElementById('processTab');
+        const resultTab = document.getElementById('resultTab');
+        const notificationArea = document.getElementById('notificationArea');
+        const yearMappingArea = document.getElementById('yearMappingArea');
+        const resultTable = document.getElementById('resultTable');
+        const backToUploadBtn = document.getElementById('backToUploadBtn');
+        const backToProcessBtn = document.getElementById('backToProcessBtn');
+        const processDataBtn = document.getElementById('processDataBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const newConversionBtn = document.getElementById('newConversionBtn');
+        const mapLembagaCheck = document.getElementById('mapLembagaCheck');
+        const delimiterSelect = document.getElementById('delimiterSelect');
+
+        // Utils
+        function showNotification(message, type = 'info') {
+            notificationArea.textContent = message;
+            notificationArea.className = `alert alert-${type}`;
+            notificationArea.classList.remove('hidden');
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                notificationArea.classList.add('hidden');
+            }, 5000);
+        }
+        
+        function switchTab(tabId) {
+            // Hide all tab panes
+            document.querySelectorAll('.tab-pane').forEach(pane => {
+                pane.classList.remove('active');
+            });
+            
+            // Deactivate all tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Activate selected tab and button
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab-btn[data-tab="${tabId}"]`).classList.add('active');
+        }
+        
+        // Parse CSV function with configurable delimiter
+        function parseCSV(csvText, delimiter = ';') {
+            // Simple CSV parser using PapaParse library (included inline for demo)
+            return Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true,
+                dynamicTyping: true,
+                delimiter: delimiter
+            });
+        }
+        
+        function generateTable(data, headerRow, maxRows = 10) {
+    if (!data || !data.length) return '<p>Tidak ada data untuk ditampilkan</p>';
+    
+    const headers = headerRow || Object.keys(data[0]);
+    const rows = data.slice(0, maxRows);
+    
+    let tableHtml = '<div style="overflow-x: auto;"><table>';
+    
+    // Header tabel
+    tableHtml += '<thead><tr>';
+    headers.forEach(header => {
+        tableHtml += `<th>${header}</th>`;
+    });
+    tableHtml += '</tr></thead>';
+    
+    // Isi tabel
+    tableHtml += '<tbody>';
+    rows.forEach(row => {
+        tableHtml += '<tr>';
+        headers.forEach(header => {
+            let value = row[header];
+            
+            // Format nilai numerik
+            if (value !== null && value !== undefined) {
+                if (header === 'Tahun') {
+                    value = parseInt(value); // Pastikan tahun ditampilkan sebagai bilangan bulat
+                } else if (typeof value === 'number') {
+                    // Bulatkan angka dan tambahkan pemisah ribuan
+                    value = Math.round(value).toLocaleString('id-ID');
+                }
+            } else {
+                value = '';
+            }
+            
+            // Tambahkan kelas CSS untuk data prediksi (tahun > 2025)
+            const isPrediction = header.includes('Realisasi') && row['Tahun'] > 2025;
+            const tdClass = isPrediction ? 'class="prediction-cell"' : '';
+            
+            tableHtml += `<td ${tdClass}>${value}</td>`;
+        });
+        tableHtml += '</tr>';
+    });
+    tableHtml += '</tbody></table></div>';
+    
+    // Tambahkan catatan jika data terpotong
+    if (data.length > maxRows) {
+        tableHtml += `<p><em>Menampilkan ${maxRows} dari ${data.length} baris data</em></p>`;
+    }
+    
+    return tableHtml;
+}
+        
+        // Convert data function
+        function convertData() {
+            if (!parsedData || !parsedData.data) {
+                showNotification('Tidak ada data untuk dikonversi', 'danger');
+                return null;
+            }
+            
+            // Get unique years and lembaga from parsed data
+            uniqueYears = [...new Set(parsedData.data.map(row => row.Tahun))];
+            uniqueLembaga = [...new Set(parsedData.data.map(row => row.Lembaga))];
+            
+            // Create result structure
+            let results = [];
+            
+            // Process each combination of year and lembaga
+            uniqueYears.forEach(yearRange => {
+                // Extract first year from format "YYYY / YYYY+1"
+                const yearParts = yearRange.split(' / ');
+                if (yearParts.length !== 2) return;
+                
+                const firstYear = parseInt(yearParts[0]);
+                if (isNaN(firstYear)) return;
+                
+                uniqueLembaga.forEach(lembaga => {
+                    // Filter data for this year and lembaga
+                    const filteredData = parsedData.data.filter(
+                        row => row.Tahun === yearRange && row.Lembaga === lembaga
+                    );
+                    
+                    if (filteredData.length === 0) return;
+                    
+                    // Get latest values based on the last entry
+                    const lastEntry = filteredData[filteredData.length - 1];
+                    
+                    // Map lembaga name if needed (Tel-U PWT -> Tel-U PWK)
+                    let mappedLembaga = lembaga;
+                    if (mapLembagaCheck.checked && lembaga === 'Tel-U PWT') {
+                        mappedLembaga = 'Tel-U PWK';
+                    }
+                    
+                    // Create result row with the required columns
+                    results.push({
+                        'Tahun': firstYear,
+                        'Lembaga': mappedLembaga,
+                        'Realisasi Pendaftar': lastEntry['Realisasi Pendaftar'],
+                        'Realisasi Registrasi (NIM)': lastEntry['Realisasi Registrasi (NIM)']
+                    });
+                });
+            });
+            
+            return results;
+        }
+        
+        // Initialize Papa Parse (CSV parsing library)
+        const Papa = {
+            parse: function(csvString, config) {
+                const delimiter = config.delimiter || ',';
+                const hasHeader = config.header || false;
+                
+                // Split by lines
+                const lines = csvString.split(/\r\n|\n/);
+                if (lines.length === 0) return { data: [], errors: [], meta: {} };
+                
+                // Get headers
+                let headers = [];
+                if (hasHeader) {
+                    const headerLine = lines[0];
+                    headers = headerLine.split(delimiter).map(h => h.trim().replace(/^"(.*)"$/, '$1'));
+                }
+                
+                // Parse data rows
+                const data = [];
+                const startIndex = hasHeader ? 1 : 0;
+                
+                for (let i = startIndex; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+                    
+                    // Split by delimiter, handling quoted fields
+                    const values = line.split(delimiter).map(v => {
+                        const trimmed = v.trim().replace(/^"(.*)"$/, '$1');
+                        // Apply dynamic typing if enabled
+                        if (config.dynamicTyping) {
+                            if (trimmed === '') return null;
+                            if (!isNaN(trimmed) && trimmed.trim() !== '') return Number(trimmed);
+                        }
+                        return trimmed;
+                    });
+                    
+                    if (hasHeader) {
+                        const row = {};
+                        headers.forEach((header, index) => {
+                            if (index < values.length) {
+                                row[header] = values[index];
+                            }
+                        });
+                        data.push(row);
+                    } else {
+                        data.push(values);
+                    }
+                }
+                
+                return {
+                    data: data,
+                    errors: [],
+                    meta: { fields: headers }
+                };
+            },
+            
+            unparse: function(data, config) {
+                if (!data || !data.length) return '';
+                
+                const delimiter = (config && config.delimiter) || ',';
+                const newline = '\r\n';
+                
+                // Get headers from the first row
+                const headers = Object.keys(data[0]);
+                
+                // Generate header row
+                let csv = headers.join(delimiter) + newline;
+                
+                // Generate data rows
+                data.forEach(row => {
+                    const values = headers.map(header => {
+                        const value = row[header];
+                        // Convert null/undefined to empty string
+                        if (value === null || value === undefined) return '';
+                        // Wrap strings containing delimiter or newline in quotes
+                        if (typeof value === 'string' && (value.includes(delimiter) || value.includes('\n'))) {
+                            return `"${value.replace(/"/g, '""')}"`;
+                        }
+                        return value;
+                    });
+                    csv += values.join(delimiter) + newline;
+                });
+                
+                return csv;
+            }
+        };
+        
+        // Event Handlers
+        fileInput.addEventListener('change', handleFileUpload);
+        dropArea.addEventListener('dragover', handleDragOver);
+        dropArea.addEventListener('drop', handleFileDrop);
+        cancelBtn.addEventListener('click', resetUpload);
+        confirmUploadBtn.addEventListener('click', goToProcessTab);
+        backToUploadBtn.addEventListener('click', () => switchTab('upload'));
+        backToProcessBtn.addEventListener('click', () => switchTab('process'));
+        processDataBtn.addEventListener('click', processData);
+        downloadBtn.addEventListener('click', downloadCSV);
+        newConversionBtn.addEventListener('click', resetAll);
+        
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.disabled) return;
+                switchTab(this.getAttribute('data-tab'));
+            });
+        });
+        
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.style.borderColor = 'var(--primary-color)';
+        }
+        
+        function handleFileDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            dropArea.style.borderColor = 'var(--border-color)';
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileUpload();
+            }
+        }
+        
+        function handleFileUpload() {
+            if (!fileInput.files.length) return;
+            
+            const file = fileInput.files[0];
+            
+            if (!file.name.toLowerCase().endsWith('.csv')) {
+                showNotification('Hanya file CSV yang didukung', 'danger');
+                return;
+            }
+            
+            fileName.textContent = file.name;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                rawData = e.target.result;
+                parsedData = parseCSV(rawData, delimiterSelect.value);
+                
+                if (parsedData.errors.length > 0) {
+                    showNotification('Terjadi kesalahan saat membaca file CSV', 'danger');
+                    console.error(parsedData.errors);
+                    return;
+                }
+                
+                if (parsedData.data.length === 0) {
+                    showNotification('File CSV tidak berisi data', 'warning');
+                    return;
+                }
+                
+                // Detect required columns
+                const requiredCols = ['Tahun', 'Lembaga', 'Realisasi Pendaftar', 'Realisasi Registrasi (NIM)'];
+                const missingCols = requiredCols.filter(col => !parsedData.meta.fields.includes(col));
+                
+                if (missingCols.length > 0) {
+                    showNotification(`Kolom yang diperlukan tidak ditemukan: ${missingCols.join(', ')}`, 'danger');
+                    return;
+                }
+                
+                // Show preview
+                previewTable.innerHTML = generateTable(parsedData.data, parsedData.meta.fields, 5);
+                previewArea.classList.remove('hidden');
+                
+                // Auto-detect delimiter
+                if (parsedData.meta.fields.some(field => field.includes(';'))) {
+                    delimiterSelect.value = ';';
+                } else if (parsedData.meta.fields.some(field => field.includes(','))) {
+                    delimiterSelect.value = ',';
+                }
+            };
+            
+            reader.readAsText(file);
+        }
+        
+        function resetUpload() {
+            fileInput.value = '';
+            fileName.textContent = '';
+            previewArea.classList.add('hidden');
+            rawData = null;
+            parsedData = null;
+        }
+        
+        function goToProcessTab() {
+            if (!parsedData || !parsedData.data.length) {
+                showNotification('Tidak ada data untuk diproses', 'warning');
+                return;
+            }
+            
+            // Activate tab and button
+            processTab.disabled = false;
+            processTab.classList.add('active');
+            
+            // Extract unique years for mapping
+            uniqueYears = [...new Set(parsedData.data.map(row => row.Tahun))].sort();
+            
+            // Create year mapping UI
+            yearMappingArea.innerHTML = '';
+            uniqueYears.forEach(year => {
+                const yearDisplay = document.createElement('div');
+                yearDisplay.className = 'form-check';
+                yearDisplay.innerHTML = `
+                    <input type="checkbox" id="year_${year.replace(/\s/g, '_')}" class="form-check-input year-check" value="${year}" checked>
+                    <label for="year_${year.replace(/\s/g, '_')}">${year}</label>
+                `;
+                yearMappingArea.appendChild(yearDisplay);
+            });
+            
+            switchTab('process');
+        }
+        
+        function processData() {
+            // Get selected years
+            const selectedYears = Array.from(document.querySelectorAll('.year-check:checked')).map(cb => cb.value);
+            
+            if (selectedYears.length === 0) {
+                showNotification('Pilih setidaknya satu periode tahun', 'warning');
+                return;
+            }
+            
+            // Filter data for selected years
+            const filteredData = {
+                ...parsedData,
+                data: parsedData.data.filter(row => selectedYears.includes(row.Tahun))
+            };
+            
+            if (filteredData.data.length === 0) {
+                showNotification('Tidak ada data untuk tahun yang dipilih', 'warning');
+                return;
+            }
+            
+            // Convert data
+            convertedData = convertData();
+            
+            if (!convertedData || convertedData.length === 0) {
+                showNotification('Gagal mengkonversi data', 'danger');
+                return;
+            }
+            
+            // Show results
+            resultTable.innerHTML = generateTable(convertedData, Object.keys(convertedData[0]));
+            
+            // Activate tab and switch
+            resultTab.disabled = false;
+            switchTab('result');
+            
+            showNotification('Data berhasil dikonversi!', 'success');
+        }
+        
+        function downloadCSV() {
+            if (!convertedData || convertedData.length === 0) {
+                showNotification('Tidak ada data untuk diunduh', 'warning');
+                return;
+            }
+            
+            const csv = Papa.unparse(convertedData);
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'hasilKonversi.csv');
+            link.style.visibility = 'hidden';
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        
+        function resetAll() {
+            resetUpload();
+            processTab.disabled = true;
+            resultTab.disabled = true;
+            convertedData = null;
+            switchTab('upload');
+        }
+
+        // Initialize the application
+        resetAll();
+        
+        // Tambahan fungsi untuk menangani perubahan delimiter
+        delimiterSelect.addEventListener('change', function() {
+            if (rawData) {
+                parsedData = parseCSV(rawData, this.value);
+                
+                if (parsedData.errors.length > 0) {
+                    showNotification('Terjadi kesalahan saat membaca file dengan delimiter baru', 'danger');
+                    return;
+                }
+                
+                // Update preview jika sudah ada
+                if (!previewArea.classList.contains('hidden')) {
+                    previewTable.innerHTML = generateTable(parsedData.data, parsedData.meta.fields, 5);
+                }
+            }
+        });
+        
+        // Menambahkan tooltip bantuan
+        const tooltips = document.querySelectorAll('[data-tooltip]');
+        tooltips.forEach(tooltip => {
+            tooltip.addEventListener('mouseenter', function() {
+                const tooltipText = this.getAttribute('data-tooltip');
+                const tooltipEl = document.createElement('div');
+                tooltipEl.className = 'tooltip';
+                tooltipEl.textContent = tooltipText;
+                
+                this.appendChild(tooltipEl);
+            });
+            
+            tooltip.addEventListener('mouseleave', function() {
+                const tooltipEl = this.querySelector('.tooltip');
+                if (tooltipEl) {
+                    tooltipEl.remove();
+                }
+            });
+        });
+        
+        // Tambahan fungsi untuk validasi data hasil konversi
+        function validateConvertedData(data) {
+            if (!data || !data.length) return false;
+            
+            // Periksa apakah semua data memiliki nilai yang valid
+            return data.every(row => {
+                return row['Tahun'] && 
+                       row['Lembaga'] && 
+                       row['Realisasi Pendaftar'] !== undefined && 
+                       row['Realisasi Registrasi (NIM)'] !== undefined;
+            });
+        }
+        
+        // Tambahan fungsi untuk format angka dengan pemisah ribuan
+        function formatNumber(num) {
+            if (num === null || num === undefined) return '';
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+        
+        document.getElementById('predictFutureBtn').addEventListener('click', async () => {
+    const formData = new FormData();
+
+    // Gunakan convertedData jika sudah ada (hasil konversi sebelumnya)
+    if (convertedData && convertedData.length > 0) {
+        const csvString = Papa.unparse(convertedData);
+        const blob = new Blob([csvString], { type: "text/csv" });
+        const fakeFile = new File([blob], "converted.csv", { type: "text/csv" });
+        formData.append("file", fakeFile);
+    } else if (fileInput.files.length > 0) {
+        formData.append("file", fileInput.files[0]);
+    } else {
+        showNotification("Harap unggah file terlebih dahulu", "warning");
+        return;
+    }
+
+    try {
+        // Tampilkan indikator loading
+        showNotification("Sedang memproses prediksi...", "info");
+        
+        const res = await fetch("http://localhost:8000/predict-telu", {
+            method: "POST",
+            body: formData
+        });
+
+        const result = await res.json();
+        console.log("Hasil API prediksi (raw):", result); // Debugging
+
+        if (result.data && result.data.length > 0) {
+            // Deteksi format data (4 kolom atau 7 kolom)
+            const hasSevenColumns = result.data.some(row => 
+                'Tahun Prediksi' in row && 'Prediksi Pendaftar' in row && 'Prediksi Registrasi' in row
+            );
+            
+            console.log("Data menggunakan format 7 kolom:", hasSevenColumns);
+            
+            // Standardisasi format data menjadi 4 kolom
+            let standardizedData = [];
+            
+            if (hasSevenColumns) {
+                // Proses data berformat 7 kolom
+                result.data.forEach(row => {
+                    // 1. Tambahkan data historis
+                    standardizedData.push({
+                        'Tahun': parseInt(row['Tahun']),
+                        'Lembaga': row['Lembaga'],
+                        'Realisasi Pendaftar': parseInt(row['Realisasi Pendaftar']),
+                        'Realisasi Registrasi (NIM)': parseInt(row['Realisasi Registrasi (NIM)'])
+                    });
+                    
+                    // 2. Tambahkan data prediksi jika ada
+                    if (row['Tahun Prediksi'] && row['Prediksi Pendaftar'] !== undefined) {
+                        standardizedData.push({
+                            'Tahun': parseInt(row['Tahun Prediksi']),
+                            'Lembaga': row['Lembaga'],
+                            'Realisasi Pendaftar': Math.round(parseFloat(row['Prediksi Pendaftar'])),
+                            'Realisasi Registrasi (NIM)': Math.round(parseFloat(row['Prediksi Registrasi']))
+                        });
+                    }
+                });
+            } else {
+                // Data sudah dalam format 4 kolom
+                standardizedData = result.data.map(row => ({
+                    'Tahun': parseInt(row['Tahun']),
+                    'Lembaga': row['Lembaga'],
+                    'Realisasi Pendaftar': parseInt(row['Realisasi Pendaftar']),
+                    'Realisasi Registrasi (NIM)': parseInt(row['Realisasi Registrasi (NIM)'])
+                }));
+            }
+            
+            console.log("Data yang distandarisasi:", standardizedData);
+            
+            // Periksa tahun dalam data hasil prediksi
+            const years = [...new Set(standardizedData.map(row => parseInt(row.Tahun)))].sort();
+            console.log("Tahun yang tersedia:", years);
+            
+            const maxYear = Math.max(...years);
+            console.log("Tahun maksimum:", maxYear);
+            
+            // Jika prediksi tidak sampai 2030, extend ke 2030
+            let processedData = standardizedData;
+            
+            if (maxYear < 2030) {
+                console.log("Memperluas prediksi hingga tahun 2030");
+                
+                // Filter data tahun terakhir untuk setiap lembaga
+                const lembagaMap = {};
+                
+                // Identifikasi data terbaru untuk tiap lembaga
+                standardizedData.forEach(row => {
+                    const year = parseInt(row.Tahun);
+                    const lembaga = row.Lembaga;
+                    
+                    if (!lembagaMap[lembaga] || year > lembagaMap[lembaga].Tahun) {
+                        lembagaMap[lembaga] = {
+                            Tahun: year,
+                            Data: row
+                        };
+                    }
+                });
+                
+                // Buat prediksi tambahan untuk tahun 2027-2030
+                const extendedData = [...standardizedData];
+                
+                Object.values(lembagaMap).forEach(item => {
+                    const baseRow = item.Data;
+                    const baseYear = parseInt(baseRow.Tahun);
+                    
+                    // Jika ini tahun terbaru dan < 2030
+                    if (baseYear >= maxYear && baseYear < 2030) {
+                        // Dapatkan data historis untuk hitung pertumbuhan
+                        const historicData = standardizedData.filter(r => 
+                            r.Lembaga === baseRow.Lembaga && parseInt(r.Tahun) < baseYear
+                        ).sort((a, b) => parseInt(b.Tahun) - parseInt(a.Tahun));
+                        
+                        // Hitung faktor pertumbuhan tahunan
+                        let growthRatePendaftar = 1.05; // Default 5% pertumbuhan
+                        let growthRateRegistrasi = 1.045; // Default 4.5% pertumbuhan
+                        
+                        if (historicData.length > 0) {
+                            const prevRow = historicData[0];
+                            const yearDiff = baseYear - parseInt(prevRow.Tahun);
+                            
+                            if (yearDiff > 0 && prevRow['Realisasi Pendaftar'] > 0) {
+                                growthRatePendaftar = Math.pow(
+                                    baseRow['Realisasi Pendaftar'] / prevRow['Realisasi Pendaftar'], 
+                                    1/yearDiff
+                                );
+                            }
+                            
+                            if (yearDiff > 0 && prevRow['Realisasi Registrasi (NIM)'] > 0) {
+                                growthRateRegistrasi = Math.pow(
+                                    baseRow['Realisasi Registrasi (NIM)'] / prevRow['Realisasi Registrasi (NIM)'], 
+                                    1/yearDiff
+                                );
+                            }
+                        }
+                        
+                        // Tambahkan variasi ke growth rate
+                        growthRatePendaftar *= (1 + Math.random() * 0.02 - 0.01); // ±1%
+                        growthRateRegistrasi *= (1 + Math.random() * 0.02 - 0.01); // ±1%
+                        
+                        // Buat data prediksi untuk tahun berikutnya hingga 2030
+                        let lastPendaftar = baseRow['Realisasi Pendaftar'];
+                        let lastRegistrasi = baseRow['Realisasi Registrasi (NIM)'];
+                        
+                        for (let year = baseYear + 1; year <= 2030; year++) {
+                            // Tambahkan variasi untuk tahun ini
+                            const yearVariation = 1 + (Math.random() * 0.06 - 0.02); // -2% hingga +4%
+                            
+                            // Prediksi dengan variasi
+                            const newPendaftar = Math.round(lastPendaftar * growthRatePendaftar * yearVariation);
+                            
+                            // Registrasi dengan sedikit variasi tambahan
+                            const registrasiVariation = 1 + (Math.random() * 0.04 - 0.01); // -1% hingga +3%
+                            let newRegistrasi = Math.round(lastRegistrasi * growthRateRegistrasi * registrasiVariation);
+                            
+                            // Pastikan registrasi tidak melebihi pendaftar
+                            newRegistrasi = Math.min(newRegistrasi, Math.floor(newPendaftar * 0.95));
+                            
+                            // Tambahkan ke data yang diperluas
+                            extendedData.push({
+                                'Tahun': year,
+                                'Lembaga': baseRow.Lembaga,
+                                'Realisasi Pendaftar': newPendaftar,
+                                'Realisasi Registrasi (NIM)': newRegistrasi
+                            });
+                            
+                            // Update untuk iterasi berikutnya
+                            lastPendaftar = newPendaftar;
+                            lastRegistrasi = newRegistrasi;
+                        }
+                    }
+                });
+                
+                processedData = extendedData;
+            }
+            
+            // Urutkan data berdasarkan tahun dan lembaga
+            processedData.sort((a, b) => {
+                const yearDiff = parseInt(a.Tahun) - parseInt(b.Tahun);
+                if (yearDiff !== 0) return yearDiff;
+                return a.Lembaga.localeCompare(b.Lembaga);
+            });
+            
+            // Hapus duplikat jika ada
+            const uniqueData = [];
+            const seen = new Set();
+            
+            processedData.forEach(row => {
+                const key = `${row.Tahun}-${row.Lembaga}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    uniqueData.push(row);
+                }
+            });
+            
+            // Simpan data yang sudah diformat
+            convertedData = uniqueData;
+            console.log("Data final:", uniqueData);
+
+            // Tampilkan di UI
+            resultTable.innerHTML = generateTable(uniqueData);
+            showNotification("✅ Prediksi hingga 2030 berhasil!", "success");
+        } else {
+            showNotification("⚠️ Data kosong atau format tidak sesuai", "warning");
+        }
+    } catch (err) {
+        console.error(err);
+        showNotification("❌ Gagal melakukan prediksi", "danger");
+    }
+});
+
+downloadBtn.addEventListener('click', () => {
+    if (!convertedData || convertedData.length === 0) {
+        showNotification('Tidak ada data untuk diunduh', 'warning');
+        return;
+    }
+
+    const csv = Papa.unparse(convertedData);
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'hasilPrediksi2030.csv');
+    link.click();
+});
+    </script>
+</body>
+</html>

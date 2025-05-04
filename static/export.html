@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformasi Data - Ekspor Model</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --telkom-red: #B81D24;
+            --telkom-dark-red: #931a1e;
+            --telkom-light-red: #e65c63;
+            --telkom-white: #FFFFFF;
+            --telkom-light-gray: #f5f5f5;
+            --telkom-dark: #1b262c;
+            --accent-color: #f9a826;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: var(--telkom-light-gray);
+            color: #333;
+            min-height: 100vh;
+        }
+        
+        /* Header Styling */
+        .header {
+            background-color: var(--telkom-red);
+            color: var(--telkom-white);
+            padding: 15px 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo img {
+            height: 50px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+            transition: transform 0.3s;
+        }
+        
+        .logo:hover img {
+            transform: scale(1.05);
+        }
+        
+        .logo-text h1 {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+        }
+        
+        .logo-text p {
+            font-size: 12px;
+            opacity: 0.9;
+            margin: 0;
+        }
+        
+        /* Main Container */
+        .custom-container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--telkom-red);
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .page-title::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--telkom-red), var(--telkom-light-red));
+            border-radius: 2px;
+        }
+        
+        /* Card Styling */
+        .custom-card {
+            background-color: var(--telkom-white);
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            overflow: hidden;
+            border: none;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .custom-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+        
+        .card-header {
+            border-bottom: none;
+            padding: 20px 25px;
+        }
+        
+        .card-header.primary-header {
+            background: linear-gradient(135deg, var(--telkom-red) 0%, var(--telkom-dark-red) 100%);
+            color: var(--telkom-white);
+        }
+        
+        .card-header.info-header {
+            background: linear-gradient(135deg, #0f4c75 0%, #3282b8 100%);
+            color: var(--telkom-white);
+        }
+        
+        .card-title {
+            margin: 0;
+            font-weight: 600;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-body {
+            padding: 25px;
+        }
+        
+        /* Form Elements */
+        .form-label {
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 8px;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            border-color: var(--telkom-red);
+            box-shadow: 0 0 0 0.2rem rgba(184, 29, 36, 0.25);
+        }
+        
+        .form-text {
+            color: #777;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+        
+        /* Button Styling */
+        .btn-telkom {
+            background: linear-gradient(135deg, var(--telkom-red) 0%, var(--telkom-dark-red) 100%);
+            color: var(--telkom-white);
+            border: none;
+            border-radius: 30px;
+            padding: 12px 25px;
+            font-weight: 600;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(184,29,36,0.3);
+        }
+        
+        .btn-telkom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(184,29,36,0.4);
+            color: var(--telkom-white);
+        }
+        
+        .btn-telkom:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(184,29,36,0.3);
+        }
+        
+        /* Alert Styling */
+        .custom-alert {
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-top: 25px;
+            display: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid;
+        }
+        
+        .alert-success {
+            background-color: #e7f7ed;
+            border-color: #28a745;
+            color: #1e7b34;
+        }
+        
+        .alert-danger {
+            background-color: #fdeded;
+            border-color: #dc3545;
+            color: #c82333;
+        }
+        
+        /* Info List */
+        .info-list {
+            padding-left: 20px;
+        }
+        
+        .info-list li {
+            margin-bottom: 8px;
+            position: relative;
+        }
+        
+        .info-list li::before {
+            content: "•";
+            color: var(--telkom-red);
+            font-weight: bold;
+            position: absolute;
+            left: -15px;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--telkom-dark);
+            color: var(--telkom-white);
+            padding: 20px 0;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 50px;
+        }
+        
+        .footer p {
+            margin: 0;
+            opacity: 0.8;
+        }
+        
+        /* File Upload Styling */
+        .file-upload {
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+            border: 2px dashed #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .file-upload:hover, .file-upload.dragover {
+            border-color: var(--telkom-red);
+            background-color: rgba(184, 29, 36, 0.05);
+        }
+        
+        .file-upload .upload-icon {
+            font-size: 40px;
+            color: #aaa;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        
+        .file-upload:hover .upload-icon, .file-upload.dragover .upload-icon {
+            color: var(--telkom-red);
+        }
+        
+        .file-upload h5 {
+            color: #555;
+            margin-bottom: 5px;
+        }
+        
+        .file-upload p {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 0;
+        }
+        
+        .file-upload input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .selected-file {
+            display: none;
+            margin-top: 15px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: left;
+        }
+        
+        .selected-file span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .file-icon {
+            color: var(--telkom-red);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                padding: 10px;
+            }
+            
+            .logo {
+                margin-bottom: 10px;
+            }
+            
+            .custom-card {
+                border-radius: 10px;
+            }
+            
+            .card-header, .card-body {
+                padding: 15px;
+            }
+            
+            .btn-telkom {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <img src="image-removebg-preview-2.png" alt="Telkom University Logo">
+                <div class="logo-text">
+                    <h1>Tel-U Prediction Analytics</h1>
+                    <p>Powered by Artificial Intelligence</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="custom-container">
+        <h1 class="page-title animate-fade-in">Transformasi Data untuk Model AI</h1>
+        
+        <!-- Upload Card -->
+        <div class="custom-card animate-fade-in" style="animation-delay: 0.1s;">
+            <div class="card-header primary-header">
+                <h5 class="card-title">
+                    <i class="fas fa-upload"></i>
+                    Upload Data Mentah
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="exportForm" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="fileInput" class="form-label">File Data (CSV atau Excel)</label>
+                        
+                        <div class="file-upload" id="dropArea">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h5>Tarik & Lepas file di sini</h5>
+                            <p>atau klik untuk memilih file</p>
+                            <input type="file" class="form-control" id="fileInput" name="file" accept=".csv,.xlsx,.xls" required>
+                        </div>
+                        
+                        <div class="selected-file" id="fileInfo">
+                            <span>
+                                <i class="fas fa-file-excel file-icon"></i>
+                                <span id="fileName">Belum ada file yang dipilih</span>
+                            </span>
+                        </div>
+                        
+                        <div class="form-text">Unggah file data mentah dalam format CSV atau Excel.</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="predictYears" class="form-label">Jumlah Tahun Prediksi</label>
+                        <input type="number" class="form-control" id="predictYears" name="predict_years" value="5" min="0" max="20">
+                        <div class="form-text">Berapa tahun ke depan yang ingin diprediksi.</div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-telkom">
+                        <i class="fas fa-cogs me-2"></i>
+                        Proses dan Unduh
+                    </button>
+                </form>
+                
+                <div class="custom-alert alert-success" id="successAlert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    Data berhasil ditransformasi! File akan diunduh secara otomatis.
+                </div>
+                
+                <div class="custom-alert alert-danger" id="errorAlert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    Terjadi kesalahan. <span id="errorMessage"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Info Card -->
+        <div class="custom-card animate-fade-in" style="animation-delay: 0.2s;">
+            <div class="card-header info-header">
+                <h5 class="card-title">
+                    <i class="fas fa-info-circle"></i>
+                    Informasi Format Data
+                </h5>
+            </div>
+            <div class="card-body">
+                <p>Tool ini mengubah data mentah (format lebar) menjadi format yang diproses (format panjang) untuk digunakan dengan model AI prediktif Telkom University.</p>
+                
+                <h6 class="mt-4 mb-2 fw-bold">Format Input:</h6>
+                <ul class="info-list">
+                    <li>File CSV atau Excel dengan kolom Program/PRODI</li>
+                    <li>Kolom tahun (seperti "Reg NIM '20/21", dll)</li>
+                    <li>Data harus tersusun dengan baik tanpa sel-sel kosong</li>
+                    <li>Header harus ada pada baris pertama</li>
+                </ul>
+                
+                <h6 class="mt-4 mb-2 fw-bold">Format Output:</h6>
+                <ul class="info-list">
+                    <li>File CSV dengan kolom: Program, Year, Reg_NIM</li>
+                    <li>Termasuk data historis dan prediksi untuk tahun-tahun mendatang</li>
+                    <li>Format siap untuk diintegrasikan dengan model machine learning</li>
+                </ul>
+                
+                <div class="mt-4 p-3 bg-light rounded">
+                    <p class="mb-1 fw-bold"><i class="fas fa-lightbulb text-warning me-2"></i>Tips:</p>
+                    <p class="mb-0 small">Pastikan data Anda bersih dan lengkap untuk hasil prediksi yang optimal. Jumlah tahun prediksi yang disarankan adalah 3-5 tahun untuk akurasi terbaik.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Telkom University Prediction Analytics. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // File upload handling
+        const dropArea = document.getElementById('dropArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        
+        // Prevent default behavior for drag events
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        // Highlight drop area when dragging files over it
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropArea.addEventListener(eventName, highlight, false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, unhighlight, false);
+        });
+        
+        function highlight() {
+            dropArea.classList.add('dragover');
+        }
+        
+        function unhighlight() {
+            dropArea.classList.remove('dragover');
+        }
+        
+        // Handle file drop
+        dropArea.addEventListener('drop', handleDrop, false);
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            updateFileInfo();
+        }
+        
+        // Handle file selection
+        fileInput.addEventListener('change', updateFileInfo);
+        
+        function updateFileInfo() {
+            if (fileInput.files && fileInput.files[0]) {
+                const file = fileInput.files[0];
+                fileName.textContent = file.name;
+                
+                // Set icon based on file type
+                const fileIcon = document.querySelector('.file-icon');
+                if (file.name.endsWith('.csv')) {
+                    fileIcon.className = 'fas fa-file-csv file-icon';
+                } else if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                    fileIcon.className = 'fas fa-file-excel file-icon';
+                } else {
+                    fileIcon.className = 'fas fa-file file-icon';
+                }
+                
+                fileInfo.style.display = 'block';
+            } else {
+                fileInfo.style.display = 'none';
+            }
+        }
+        
+        // Form submission
+        document.getElementById('exportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            successAlert.style.display = 'none';
+            errorAlert.style.display = 'none';
+            
+            // Show loading state
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Memproses...';
+            submitBtn.disabled = true;
+            
+            try {
+                const response = await fetch('/export-data', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    
+                    if (contentType && contentType.includes('application/json')) {
+                        const data = await response.json();
+                        errorMessage.textContent = data.error || 'Terjadi kesalahan tidak diketahui.';
+                        errorAlert.style.display = 'block';
+                    } else {
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        
+                        const contentDisposition = response.headers.get('content-disposition');
+                        let filename = 'data_transformed.csv';
+                        
+                        if (contentDisposition) {
+                            const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                            if (filenameMatch) {
+                                filename = filenameMatch[1];
+                            }
+                        }
+                        
+                        a.href = url;
+                        a.download = filename;
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                        
+                        successAlert.style.display = 'block';
+                    }
+                } else {
+                    errorMessage.textContent = 'Terjadi kesalahan server.';
+                    errorAlert.style.display = 'block';
+                }
+            } catch (error) {
+                errorMessage.textContent = error.message || 'Terjadi kesalahan jaringan.';
+                errorAlert.style.display = 'block';
+            } finally {
+                // Reset button state
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

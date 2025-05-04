@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Analisis Program Studi</title>
+    <style>
+        :root {
+            --primary-color: #fafafa;             --primary-dark: #c0392b;             --secondary-color: #f8f8f8;             --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --border-color: #e0e0e0;
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --text-secondary: #7f8c8d;
+            --accent-color: #8e44ad;             --accent-red: rgb(255, 0, 0);         }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+                .header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: var(--accent-red);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-content {
+            text-align: left;
+            flex: 1;
+            padding-right: 20px;
+            max-width: 60%;
+        }
+        
+        .header h1 {
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            color: var(--accent-red);
+        }
+        
+        .header p {
+            color: rgba(255, 0, 0, 0.9);
+            font-size: 1.1rem;
+        }
+        
+                .header-logos {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            justify-content: flex-end;
+            flex: 1;
+            max-width: 40%;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .logo-vertical {
+            width: 90px;
+            height: 90px;
+        }
+        
+        .logo-landscape {
+            width: 180px;
+            height: 90px;
+        }
+        
+        .logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+                .nav-bar {
+            background-color: var(--accent-red);
+            padding: 12px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+        
+        .nav-button {
+            background-color: white;
+            color: var(--accent-red);
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .nav-button:hover, .nav-button.active {
+            background-color: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+                .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            padding: 25px;
+            overflow: hidden;
+            border-top: 3px solid var(--accent-red);
+        }
+        
+        h2, h3, h4 {
+            color: var(--accent-red);
+            margin-bottom: 15px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .status-badge {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        .status-text {
+            line-height: 1.4;
+        }
+        
+        .status-detail {
+            margin: 10px 0;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .error-message, .warning-message, .success-message {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .error-message {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--error-color);
+            border-left: 4px solid var(--error-color);
+        }
+        
+        .warning-message {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .success-message {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-color);
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .primary-button {
+            background-color: var(--accent-red);
+            color: white;
+        }
+        
+        .primary-button:hover {
+            background-color: #d90000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .secondary-button {
+            background-color: white;
+            color: var(--accent-red);
+            border: 2px solid var(--accent-red);
+        }
+        
+        .secondary-button:hover {
+            background-color: rgba(255, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .compare-button {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .compare-button:hover {
+            background-color: #7d3c98;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .download-button {
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            margin: 10px 0;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .download-button:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        th {
+            background-color: var(--accent-red);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95em;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--accent-red);
+        }
+        
+        .instructions ol, .instructions ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        details {
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--accent-red);
+            padding: 5px 0;
+        }
+        
+        summary:hover {
+            color: #d90000;
+        }
+        
+        pre {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-size: 14px;
+            color: #333;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .jurusan-list {
+            max-height: 300px;
+            overflow-y: auto;
+            columns: 3;
+            list-style-position: inside;
+        }
+        
+        @media (max-width: 992px) {
+            .header-content {
+                max-width: 50%;
+            }
+            
+            .header-logos {
+                max-width: 50%;
+                gap: 15px;
+            }
+            
+            .logo-vertical {
+                width: 70px;
+                height: 70px;
+            }
+            
+            .logo-landscape {
+                width: 140px;
+                height: 70px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .jurusan-list {
+                columns: 1;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                padding: 0 15px;
+            }
+            
+            .nav-button {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            button, .download-button {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            .header {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .header-content {
+                text-align: center;
+                margin-bottom: 15px;
+                max-width: 100%;
+                padding-right: 0;
+            }
+            
+            .header-logos {
+                justify-content: center;
+                margin-top: 15px;
+                max-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .logo-vertical {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .logo-landscape {
+                width: 120px;
+                height: 60px;
+            }
+        }
+        
+        .meta-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-red);
+        }
+        
+        .action-buttons {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        #file-info {
+            display: none;
+            padding: 15px;
+            background-color: rgba(255, 0, 0, 0.05);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-red);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--accent-red);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .info-table {
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .info-table td {
+            padding: 12px;
+            border: 1px solid #eee;
+        }
+        
+        .info-table td:first-child {
+            font-weight: 600;
+            width: 30%;
+            background-color: rgba(255, 0, 0, 0.05);
+            color: var(--accent-red);
+        }
+        
+        .env-info {
+            font-size: 0.9em;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent-red);
+        }
+        
+        .env-info ul {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-left: 20px;
+        }
+        
+        .table-note {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+                #dev-tools-panel {
+            display: none;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        
+        #dev-tools-panel.visible {
+            display: block;
+        }
+        
+        #dev-tools-panel h3 {
+            color: white;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 15px;
+        }
+        
+        #error-log {
+            background-color: #34495e;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            height: 200px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+        
+        .error-entry {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .error-entry pre {
+            background-color: rgba(0,0,0,0.2);
+            color: #e74c3c;
+            margin-top: 8px;
+        }
+        
+        #toggle-dev-tools {
+            display: none;
+            background-color: var(--accent-red);
+            color: white;
+            font-size: 12px;
+            padding: 8px 15px;
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            z-index: 1000;
+            border-radius: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+                .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .stat-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-top: 4px solid var(--accent-red);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--accent-red);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        
+                .chart-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .chart-container h4 {
+            color: var(--accent-red);
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        
+        canvas {
+            max-width: 100%;
+        }
+        
+                .result-tabs {
+            display: flex;
+            border-bottom: 3px solid var(--accent-red);
+            margin-bottom: 20px;
+            overflow-x: auto;
+            padding-bottom: 1px;
+        }
+        
+        .tab-button {
+            background-color: white;
+            border: 2px solid var(--accent-red);
+            border-bottom: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--accent-red);
+            margin-right: 5px;
+            margin-bottom: 0;
+            border-radius: 8px 8px 0 0;
+        }
+        
+        .tab-button.active {
+            background-color: var(--accent-red);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        
+                .yearly-charts-section {
+            margin-top: 30px;
+        }
+        
+        .year-tabs {
+            display: flex;
+            overflow-x: auto;
+            border-bottom: 3px solid var(--accent-red);
+            margin-bottom: 20px;
+            padding-bottom: 1px;
+            white-space: nowrap;
+        }
+        
+        .year-tab {
+            background-color: white;
+            border: 2px solid var(--accent-red);
+            border-bottom: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-right: 5px;
+            border-radius: 8px 8px 0 0;
+            color: var(--accent-red);
+        }
+        
+        .year-tab.active {
+            background-color: var(--accent-red);
+            color: white;
+        }
+        
+        .year-content {
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        
+                .footer {
+            background-color: var(--primary-color);
+            color: var(--accent-red);
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 3px solid var(--accent-red);
+        }
+        
+        .footer p {
+            margin: 0;
+            font-weight: 500;
+        }
+        
+                .back-to-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--accent-red);
+            color: white;
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            line-height: 40px;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: none;
+            opacity: 0.8;
+            z-index: 1000;
+            transition: opacity 0.3s ease;
+        }
+        
+        .back-to-top:hover {
+            opacity: 1;
+        }
+        
+                .section {
+            scroll-margin-top: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Sistem Analisis Program Studi</h1>
+            <p>Sistem Analisis Program Studi Telkom University</p>
+        </div>
+        <div class="header-logos">
+            <div class="logo logo-vertical">
+                <img src="image-removebg-preview.png" alt="Logo 1" />
+            </div>
+            <div class="logo logo-landscape">
+                <img src="image-removebg-preview-2.png" alt="Logo 2" />
+            </div>
+        </div>
+    </div>
+    
+        <div class="nav-bar">
+        <div class="nav-container">
+            <button class="nav-button" onclick="window.location.href='predikYoY.html'">Prediksi YoY Pendaftar</button>
+            <button class="nav-button" onclick="window.location.href='predikTELU.html'">Prediksi Pendaftaran dan Registrasi Tel-U</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card section" id="app-status">
+            <h3>Status Aplikasi</h3>
+            <p>Memeriksa status aplikasi...</p>
+        </div>
+        
+        <div class="card section" id="jurusan-list">
+            <h3>Daftar Program Studi</h3>
+            <p>Memuat daftar program studi...</p>
+        </div>
+        
+        <div class="card section" id="upload-section">
+            <h3>Upload Data</h3>
+            <p>Upload file CSV atau Excel yang berisi data nilai siswa untuk melihat distribusi program studi.</p>
+            
+            <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" />
+            <div id="file-info"></div>
+            
+            <div class="action-buttons">
+                <button onclick="uploadFile()" class="primary-button">Upload dan Analisis</button>
+                <button onclick="testUpload()" class="secondary-button">Tes Upload</button>
+                <button onclick="generateSampleData()" class="secondary-button">Lihat Data Contoh</button>
+                <button class="compare-button" onclick="window.location.href='export.html'">export</button>
+            </div>
+            
+            <div class="instructions">
+                <h4>Petunjuk Penggunaan:</h4>
+                <ul>
+                    <li>File harus dalam format CSV atau Excel (.xlsx)</li>
+                    <li>File harus memiliki kolom <strong>Program</strong> yang berisi nama program studi</li>
+                    <li>Tambahkan kolom <strong>tahun</strong> untuk melihat visualisasi berdasarkan tahun</li>
+                    <li>Jika mengalami masalah, gunakan tombol "Tes Upload" untuk memeriksa file</li>
+                    <li>Atau gunakan tombol "Lihat Data Contoh" untuk mengunduh template data</li>
+                    <li>Gunakan tombol "Prediksi PMB Compare" untuk membandingkan prediksi penerimaan mahasiswa baru</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card section" id="output">
+            <h3>Hasil Analisis</h3>
+            <p>Hasil analisis distribusi program studi akan muncul di sini setelah Anda mengupload data.</p>
+        </div>
+        
+        <div class="card section" id="help-section">
+            <h3>Bantuan & Dukungan</h3>
+            <p>Jika Anda memerlukan bantuan dalam menggunakan sistem ini, silakan lihat panduan berikut:</p>
+            
+            <details>
+                <summary>Format File yang Didukung</summary>
+                <div class="meta-info">
+                    <p>Sistem ini mendukung format file berikut:</p>
+                    <ul>
+                        <li>CSV (Comma Separated Values)</li>
+                        <li>Excel (.xlsx, .xls)</li>
+                    </ul>
+                    <p>Pastikan file Anda memiliki setidaknya kolom "Program" yang berisi nama program studi.</p>
+                </div>
+            </details>
+            
+            <details>
+                <summary>Cara Menganalisis Data</summary>
+                <div class="meta-info">
+                    <ol>
+                        <li>Upload file CSV atau Excel Anda menggunakan form upload</li>
+                        <li>Klik tombol "Upload dan Analisis"</li>
+                        <li>Sistem akan memproses data dan menampilkan hasil analisis</li>
+                        <li>Anda dapat melihat distribusi program studi dan visualisasi data</li>
+                    </ol>
+                </div>
+            </details>
+            
+            <details>
+                <summary>Masalah Umum dan Solusi</summary>
+                <div class="meta-info">
+                    <p><strong>File tidak dapat diupload:</strong> Pastikan format file sesuai (.csv, .xlsx, .xls)</p>
+                    <p><strong>Data tidak muncul:</strong> Periksa apakah file memiliki kolom "Program"</p>
+                    <p><strong>Visualisasi tidak muncul:</strong> Pastikan kolom "tahun" ada dalam file data Anda</p>
+                </div>
+            </details>
+            
+                    </div>
+    </div>
+    
+        <div class="back-to-top" id="backToTop" onclick="scrollToTop()">↑</div>
+    
+        <div class="footer">
+        <p>© 2025 Sistem Analisis Program Studi. Hak Cipta Dilindungi.</p>
+    </div>
+    
+        <button id="toggle-dev-tools" onclick="toggleDevTools()">Buka Dev Tools</button>
+    
+    <div id="dev-tools-panel">
+        <h3>Developer Tools</h3>
+        <div id="error-log">
+            <div class="error-entry">Log error akan muncul di sini</div>
+        </div>
+        <div class="action-buttons">
+            <button onclick="clearErrorLog()" class="secondary-button">Clear Log</button>
+        </div>
+    </div>
+    
+        <script src="script.js"></script>
+</body>
+</html>

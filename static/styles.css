@@ -1,0 +1,12 @@
+body {
+    font-family: Arial;
+    padding: 20px;
+  }
+  
+  #output {
+    margin-top: 20px;
+    white-space: pre-wrap;
+    background: #f0f0f0;
+    padding: 10px;
+  }
+  

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediksi YoY Pendaftar | Sistem Analisis Program Studi</title>
+    <link rel="stylesheet" href="yoypredik.css">
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Prediksi YoY Pendaftar</h1>
+            <p>Sistem Analisis Program Studi Telkom University</p>
+        </div>
+        <div class="header-logos">
+            <div class="logo logo-vertical">
+                <img src="image-removebg-preview.png" alt="Logo 1" />
+            </div>
+            <div class="logo logo-landscape">
+                <img src="image-removebg-preview-2.png" alt="Logo 2" />
+            </div>
+        </div>
+    </div>
+    
+        <div class="nav-bar">
+        <div class="nav-container">
+            <button class="nav-button" onclick="window.location.href='prodi.html'">Prediksi Prodi</button>
+            <button class="nav-button" onclick="window.location.href='predikTELU.html'">Prediksi Pendaftaran dan Registrasi Tel-U</button>
+            <button class="nav-button" onclick="window.location.href='index.html'">Kembali ke Beranda</button>
+          
+            
+        </div>
+    </div>
+    
+    <div class="container">
+                <div class="card section" id="upload-section">
+            <h3>Upload Data</h3>
+            <p>Upload file CSV yang berisi data pendaftar untuk melihat prediksi trend YoY.</p>
+            
+            <input type="file" id="fileInput" accept=".csv" />
+            <div id="file-info" style="display: none;"></div>
+            
+            <div class="action-buttons">
+                <button onclick="processFile()" class="primary-button">Upload dan Analisis</button>
+                <button onclick="generateSampleData()" class="secondary-button">Gunakan Data Contoh</button>
+                <button onclick="exportToCSV()" class="export-button">Ekspor Hasil ke CSV</button>
+                <button class="nav-button" onclick="window.location.href='exportpendaftarup3.html'">konversi UP3</button>
+            <button class="nav-button" onclick="window.location.href='konvert.html'">konversi pendaftar</button>
+            </div>
+            
+            <div class="instructions">
+                <h4>Petunjuk Penggunaan:</h4>
+                <div id="file-format-info">
+                                    </div>
+            </div>
+        </div>
+        
+                <div class="card">
+            <h3>Pilih Model AI & Status Sistem</h3>
+            
+                        <div class="status-section">
+                <div class="status-toggle" onclick="toggleStatus()">
+                    <h4>Status Aplikasi & Model AI</h4>
+                    <span id="toggle-icon">▼</span>
+                </div>
+                <div class="status-content" id="status-content">
+                    <div id="status-output">
+                        <p>Memuat status aplikasi...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <p>Silakan pilih model AI yang ingin digunakan untuk prediksi tren Year-over-Year (YoY) pendaftar:</p>
+            
+            <div class="model-selection">
+                <div class="model-box active" id="model-pendaftar" onclick="selectModel('pendaftar')">
+                    <h4>Model AI Trend Pendaftar</h4>
+                    <p class="model-description">Menggunakan data historis untuk memprediksi jumlah pendaftar berdasarkan pola pertumbuhan yang terlihat dalam data aktual.</p>
+                </div>
+                
+                <div class="model-box" id="model-up3" onclick="selectModel('up3')">
+                    <h4>Model AI Trend UP3</h4>
+                    <p class="model-description">Menggunakan algoritma yang lebih agresif dengan mempertimbangkan faktor pertumbuhan yang lebih tinggi berdasarkan strategi pengembangan universitas.</p>
+                </div>
+            </div>
+            
+                        <div class="campus-selection">
+                <h4>Pilih Kampus</h4>
+                <select id="campus-select" onchange="updatePrediction()">
+                    <option value="all">Semua Kampus</option>
+                    <option value="TELU">TELU</option>
+                    <option value="TELU PWT">TELU PWT</option>
+                    <option value="TELU SBY">TELU SBY</option>
+                    <option value="TELU JKT">TELU JKT</option>
+                </select>
+            </div>
+        </div>
+        
+                <div class="card">
+            <div class="graph-container">
+                <h3>Grafik Trend Pendaftar <span id="campus-title">Semua Kampus</span> (2021 - 2030)</h3>
+                <div id="chart-container" style="height: 400px; width: 100%;">
+                                    </div>
+            </div>
+            
+                        <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-average">0</div>
+                    <div class="stat-label">Rata-rata Pendaftar</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-growth">0%</div>
+                    <div class="stat-label">Tingkat Pertumbuhan</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-max">0</div>
+                    <div class="stat-label">Jumlah Tertinggi <span id="max-year">(2024)</span></div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-value" id="stat-prediction">0</div>
+                    <div class="stat-label">Prediksi 2030</div>
+                </div>
+            </div>
+        </div>
+        
+                <div class="card">
+            <h3>Detail Prediksi</h3>
+            <p id="model-description">Model AI Trend Pendaftar menggunakan data historis untuk memproyeksikan jumlah pendaftar di masa depan berdasarkan pola pertumbuhan yang terlihat dalam data aktual.</p>
+            
+            <div class="table-container">
+                <table id="prediction-table">
+                    <thead>
+                        <tr>
+                            <th>Tahun</th>
+                            <th>Jumlah Pendaftar</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                                            </tbody>
+                </table>
+            </div>
+            
+            <div class="table-note">
+                * Data aktual tersedia dari tahun 2021 sampai 2024. Prediksi dibuat untuk tahun 2025 sampai 2030.
+            </div>
+        </div>
+    </div>
+    
+        <div class="footer">
+        <p>© 2025 Sistem Analisis Program Studi. Hak Cipta Dilindungi.</p>
+    </div>
+    
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exporter Prediksi Lembaga Tel-U</title>
+    <style>
+        :root {
+            --primary-color: #fafafa;
+            --primary-dark: #c0392b;
+            --secondary-color: #f8f8f8;
+            --success-color: #2ecc71;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --border-color: #e0e0e0;
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --text-secondary: #7f8c8d;
+            --accent-color: #8e44ad;
+            --accent-red: rgb(255, 0, 0);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--secondary-color);
+            padding: 0;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: var(--accent-red);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-content {
+            text-align: left;
+            flex: 1;
+            padding-right: 20px;
+            max-width: 60%;
+        }
+        
+        .header h1 {
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+            color: var(--accent-red);
+        }
+        
+        .header p {
+            color: rgba(255, 0, 0, 0.9);
+            font-size: 1.1rem;
+        }
+        
+        .header-logos {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            justify-content: flex-end;
+            flex: 1;
+            max-width: 40%;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .logo-vertical {
+            width: 90px;
+            height: 90px;
+        }
+        
+        .logo-landscape {
+            width: 180px;
+            height: 90px;
+        }
+        
+        .logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .nav-bar {
+            background-color: var(--accent-red);
+            padding: 12px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+        }
+        
+        .nav-button {
+            background-color: white;
+            color: var(--accent-red);
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .nav-button:hover, .nav-button.active {
+            background-color: rgba(255, 255, 255, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            padding: 25px;
+            overflow: hidden;
+            border-top: 3px solid var(--accent-red);
+        }
+        
+        h2, h3, h4 {
+            color: var(--accent-red);
+            margin-bottom: 15px;
+        }
+        
+        p {
+            margin-bottom: 15px;
+        }
+        
+        .error-message, .warning-message, .success-message {
+            padding: 10px 15px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .error-message {
+            background-color: rgba(231, 76, 60, 0.1);
+            color: var(--error-color);
+            border-left: 4px solid var(--error-color);
+        }
+        
+        .warning-message {
+            background-color: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .success-message {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: var(--success-color);
+            border-left: 4px solid var(--success-color);
+        }
+        
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-color);
+        }
+        
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .primary-button {
+            background-color: var(--accent-red);
+            color: white;
+        }
+        
+        .primary-button:hover {
+            background-color: #d90000;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .secondary-button {
+            background-color: white;
+            color: var(--accent-red);
+            border: 2px solid var(--accent-red);
+        }
+        
+        .secondary-button:hover {
+            background-color: rgba(255, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .compare-button {
+            background-color: var(--accent-color);
+            color: white;
+        }
+        
+        .compare-button:hover {
+            background-color: #7d3c98;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .download-button {
+            background-color: #27ae60;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-radius: 30px;
+            display: inline-block;
+            margin: 10px 0;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .download-button:hover {
+            background-color: #219653;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        th {
+            background-color: var(--accent-red);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95em;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid var(--accent-red);
+        }
+        
+        .instructions ol, .instructions ul {
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .meta-info {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-red);
+        }
+        
+        .action-buttons {
+            margin-top: 15px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        #file-info {
+            display: none;
+            padding: 15px;
+            background-color: rgba(255, 0, 0, 0.05);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--accent-red);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--accent-red);
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .info-table {
+            width: 100%;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .info-table td {
+            padding: 12px;
+            border: 1px solid #eee;
+        }
+        
+        .info-table td:first-child {
+            font-weight: 600;
+            width: 30%;
+            background-color: rgba(255, 0, 0, 0.05);
+            color: var(--accent-red);
+        }
+        
+        .chart-container {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .chart-container h4 {
+            color: var(--accent-red);
+            margin-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        
+        canvas {
+            max-width: 100%;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        .form-group select,
+        .form-group input[type="number"],
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: white;
+            font-size: 16px;
+        }
+        
+        .footer {
+            background-color: var(--primary-color);
+            color: var(--accent-red);
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-top: 3px solid var(--accent-red);
+        }
+        
+        .footer p {
+            margin: 0;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+                padding: 0 15px;
+            }
+            
+            .nav-button {
+                width: 100%;
+                margin: 5px 0;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            button, .download-button {
+                width: 100%;
+                margin-right: 0;
+            }
+            
+            .header {
+                flex-direction: column;
+                padding: 20px;
+            }
+            
+            .header-content {
+                text-align: center;
+                margin-bottom: 15px;
+                max-width: 100%;
+                padding-right: 0;
+            }
+            
+            .header-logos {
+                justify-content: center;
+                margin-top: 15px;
+                max-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header p {
+                font-size: 1rem;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+        }
+        
+        .export-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .export-option {
+            background-color: white;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .export-option:hover {
+            border-color: var(--accent-red);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .export-option.selected {
+            border-color: var(--accent-red);
+            background-color: rgba(255, 0, 0, 0.05);
+        }
+        
+        .export-option h4 {
+            margin-bottom: 10px;
+        }
+        
+        .export-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: var(--accent-red);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <h1>Exporter Prediksi Lembaga Tel-U</h1>
+            <p>Ekspor dan Transformasi Data Prediksi PMB</p>
+        </div>
+        <div class="header-logos">
+            <div class="logo logo-vertical">
+                <img src="image-removebg-preview.png" alt="Logo 1" />
+            </div>
+            <div class="logo logo-landscape">
+                <img src="image-removebg-preview-2.png" alt="Logo 2" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="nav-bar">
+        <div class="nav-container">
+            <button class="nav-button" onclick="window.location.href='index.html'">Kembali ke Dashboard</button>
+            <button class="nav-button" onclick="window.location.href='predikTELU.html'">Buka Prediksi Lembaga</button>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="card">
+            <h3>Upload Data Mentah</h3>
+            <p>Upload file CSV yang berisi data mentah pendaftaran dan registrasi mahasiswa.</p>
+            
+            <input type="file" id="fileInput" accept=".csv" />
+            <div id="file-info"></div>
+            
+            <div class="action-buttons">
+                <button onclick="processData()" class="primary-button">Proses Data</button>
+                <button onclick="loadSampleData()" class="secondary-button">Gunakan Data Contoh</button>
+            </div>
+            
+            <div class="instructions">
+                <h4>Format File CSV:</h4>
+                <p>File CSV harus berisi kolom-kolom berikut:</p>
+                <ul>
+                    <li><strong>Tahun</strong> - Tahun pendaftaran/registrasi</li>
+                    <li><strong>Lembaga</strong> - Nama fakultas atau lembaga</li>
+                    <li><strong>Realisasi Pendaftar</strong> - Jumlah pendaftar pada tahun tersebut</li>
+                    <li><strong>Realisasi Registrasi (NIM)</strong> - Jumlah mahasiswa yang melakukan registrasi</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="card" id="data-preview">
+            <h3>Preview Data</h3>
+            <p id="preview-placeholder">Data akan ditampilkan di sini setelah diproses.</p>
+            <div id="data-preview-content"></div>
+        </div>
+        
+        <div class="card" id="export-options-section" style="display: none;">
+            <h3>Opsi Ekspor</h3>
+            <p>Pilih format ekspor yang diinginkan:</p>
+            
+            <div class="export-options">
+                <div class="export-option" onclick="selectExportOption('csv')" id="option-csv">
+                    <div class="export-icon">📄</div>
+                    <h4>CSV</h4>
+                    <p>Format data tabular standard</p>
+                </div>
+                
+                <div class="export-option" onclick="selectExportOption('excel')" id="option-excel">
+                    <div class="export-icon">📊</div>
+                    <h4>Excel</h4>
+                    <p>Format spreadsheet dengan formula</p>
+                </div>
+                
+                <div class="export-option" onclick="selectExportOption('json')" id="option-json">
+                    <div class="export-icon">{ }</div>
+                    <h4>JSON</h4>
+                    <p>Format untuk integrasi API</p>
+                </div>
+                
+                <div class="export-option" onclick="selectExportOption('report')" id="option-report">
+                    <div class="export-icon">📝</div>
+                    <h4>Laporan PDF</h4>
+                    <p>Laporan lengkap dengan analisis</p>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="tahun-prediksi">Tahun Prediksi:</label>
+                <input type="number" id="tahun-prediksi" min="2023" max="2030" value="2025">
+            </div>
+            
+            <div class="action-buttons">
+                <button onclick="exportData()" class="primary-button">Ekspor Data</button>
+                <button onclick="resetForm()" class="secondary-button">Reset</button>
+            </div>
+        </div>
+        
+        <div class="card" id="export-preview" style="display: none;">
+            <h3>Preview Ekspor</h3>
+            <div id="export-preview-content"></div>
+            
+            <div class="action-buttons">
+                <button id="download-button" class="download-button">Download</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>Bantuan</h3>
+            <div class="meta-info">
+                <h4>Tentang Data Mentah dan Matang</h4>
+                <p><strong>Data Mentah:</strong> Data asli dengan format dasar yang belum diproses.</p>
+                <p><strong>Data Matang:</strong> Data yang telah diproses, dibersihkan, dan ditransformasi menjadi format yang lebih mudah dianalisis.</p>
+                
+                <h4>Proses Transformasi</h4>
+                <ul>
+                    <li>Pembersihan data dari nilai yang tidak valid</li>
+                    <li>Penghitungan rasio konversi (Registrasi/Pendaftar)</li>
+                    <li>Pengelompokan berdasarkan lembaga dan tahun</li>
+                    <li>Perhitungan tren dan pertumbuhan</li>
+                    <li>Prediksi untuk tahun-tahun berikutnya</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>© 2025 Sistem Prediksi PMB Telkom University. Hak Cipta Dilindungi.</p>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="export.js"></script>
+</body>
+</html>
