@@ -20,6 +20,7 @@ import sys
 import json
 from collections import Counter, defaultdict
 from predik import load_predik_model, predict_telu
+from fastapi import FastAPI
 import re
 logging.basicConfig(
     level=logging.DEBUG,
@@ -44,6 +45,9 @@ app_info = {
     "version": "1.2.0",
     "status": "initializing"
 }
+@app.get("/")
+def read_root():
+    return {"message": "API is alive!"}
 @app.post("/predict-telu")
 async def route_predict_telu(file: UploadFile = File(...)):
     return await predict_telu(file)
