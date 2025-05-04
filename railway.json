@@ -1,13 +1,10 @@
 {
+    "$schema": "https://railway.app/railway.schema.json",
     "build": {
-      "env": {
-        "PYTHONUNBUFFERED": "1"
-      }
+      "builder": "NIXPACKS"
     },
     "deploy": {
-      "startCommand": "uvicorn main:app --host 0.0.0.0 --port 8000",
-      "healthcheckPath": "/docs",
-      "port": 8000
+      "startCommand": "uvicorn main:app --host 0.0.0.0 --port $PORT"
     }
   }
   
