@@ -121,7 +121,7 @@ async function checkAppStatus() {
 
 async function fetchJurusanList() {
     try {
-        const response = await fetch("https://web-production-68c4e.up.railway.app/status")
+        const response = await fetch("https://web-production-68c4e.up.railway.app/jurusan")
 
         if (!response.ok) {
             throw new Error(`HTTP error: ${response.status}`);
